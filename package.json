@@ -1,0 +1,23 @@
+{
+  "name": "singularity-speaking-engine",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Singularity: Interactive Spoken English & Story Worlds Engine powered by Tauri 2",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Aauioa/trpg.git"
+  },
+  "license": "MIT",
+  "scripts": {
+    "tauri": "tauri",
+    "build:css": "tailwindcss -c tailwind.config.cjs -i tailwind.input.css -o src/vendor/tailwind.css --minify",
+    "test": "node tests/run-all.js",
+    "test:snapshot": "node tests/tools/snapshot-hud.js compare",
+    "snapshot:baseline": "node tests/tools/snapshot-hud.js baseline"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2",
+    "jsdom": "^30.0.1",
+    "tailwindcss": "^3.4.19"
+  }
+}

@@ -1,0 +1,1701 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>奇点 · 语境口语剧场 - AI 实时英语口语互动文游引擎</title>
+  <!-- 全部依赖已本地化，应用可完全离线运行（原先依赖 CDN，断网即无样式） -->
+  <link rel="stylesheet" href="vendor/tailwind.css">
+  <script src="vendor/marked.min.js"></script>
+  <script src="vendor/purify.min.js"></script>
+  <script src="vendor/three.min.js"></script>
+  
+  <style>
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.5);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(51, 65, 85, 0.75);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(139, 92, 246, 0.7);
+    }
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(71, 85, 105, 0.6) rgba(15, 23, 42, 0.5);
+    }
+
+    .bar-fill {
+      transition: width 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+      background-image: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.22) 50%, rgba(255,255,255,0) 100%);
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 0.3; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1.1); }
+    }
+    .animate-pulse-dot {
+      animation: pulse-dot 1.4s infinite ease-in-out;
+    }
+
+    .stream-caret {
+      opacity: 0.55;
+      animation: pulse-dot 1.4s infinite ease-in-out;
+    }
+
+    .writing-vertical {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      letter-spacing: 0.2em;
+    }
+
+    :root {
+      --hl-color: #a62620;
+      --hl-bg: rgba(166, 38, 32, 0.14);
+      --hl-border: rgba(166, 38, 32, 0.42);
+      --hl-glow: rgba(166, 38, 32, 0.22);
+      --spring-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+      --spring-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .prose strong, .prose b {
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.22s var(--spring-smooth);
+    }
+
+    .hl-mode-tag .prose strong, .hl-mode-tag .prose b,
+    .hl-mode-tag strong, .hl-mode-tag b {
+      color: var(--hl-color) !important;
+      background-color: var(--hl-bg);
+      border: 1px solid var(--hl-border);
+      box-shadow: 1.5px 1.5px 0px rgba(24, 21, 18, 0.2);
+      padding: 0.08rem 0.44rem;
+      margin: 0 0.12rem;
+      border-radius: 0.25rem;
+      display: inline-block;
+      line-height: 1.35;
+      font-weight: 700;
+    }
+
+    .hl-mode-marker .prose strong, .hl-mode-marker .prose b,
+    .hl-mode-marker strong, .hl-mode-marker b {
+      color: var(--ed-ink, #181512) !important;
+      background: linear-gradient(180deg, transparent 42%, var(--hl-bg) 42%);
+      border-bottom: 2px solid var(--hl-color);
+      padding: 0 0.25rem;
+      margin: 0 0.1rem;
+      font-weight: 700;
+    }
+
+    .hl-mode-neon .prose strong, .hl-mode-neon .prose b,
+    .hl-mode-neon strong, .hl-mode-neon b {
+      color: var(--hl-color) !important;
+      text-shadow: 0 0 6px var(--hl-glow), 0 0 14px var(--hl-glow);
+      border-bottom: 1px dashed var(--hl-border);
+      font-weight: 700;
+      padding: 0 0.18rem;
+    }
+
+    .prose strong[data-hl-state="known"]::after,
+    .prose b[data-hl-state="known"]::after {
+      content: " ✓";
+      font-size: 0.72em;
+      opacity: 0.85;
+    }
+
+    .prose strong[data-hl-state="unknown"]::after,
+    .prose b[data-hl-state="unknown"]::after {
+      content: " 🎯";
+      font-size: 0.72em;
+      opacity: 0.9;
+    }
+
+    .prose strong:hover, .prose b:hover {
+      filter: brightness(1.08);
+      transform: translateY(-1.5px);
+      box-shadow: 2.5px 2.5px 0px var(--ed-border, #181512);
+    }
+
+    .btn-deduce {
+      background: linear-gradient(135deg, #8b5cf6, #6366f1);
+      box-shadow: 0 4px 14px rgba(139, 92, 246, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      transition: transform 0.28s var(--spring-bounce), box-shadow 0.28s var(--spring-smooth), filter 0.2s ease;
+    }
+    .btn-deduce:hover:not(:disabled) {
+      transform: translateY(-2px) scale(1.01);
+      box-shadow: 0 8px 24px rgba(139, 92, 246, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.35);
+    }
+    .btn-deduce:active:not(:disabled) {
+      transform: translateY(1px) scale(0.97);
+      box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+    }
+
+    .privacy-shield-active .privacy-sensitive {
+      filter: blur(5.5px);
+      transition: filter 0.25s ease;
+      user-select: none;
+    }
+    .privacy-shield-active .privacy-sensitive:hover {
+      filter: blur(0px);
+      user-select: auto;
+    }
+
+    /* Three.js 3D 交互舞台层 */
+    #threeStageWrap {
+      pointer-events: none;
+      transition: opacity 0.6s var(--spring-smooth), filter 0.6s var(--spring-smooth);
+    }
+    #threeStageCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* 丝滑物理过渡曲线与卡片微交互 */
+    button, .hud-tab-btn {
+      transition: transform 0.24s var(--spring-bounce), background-color 0.22s ease, border-color 0.22s ease, box-shadow 0.24s ease, color 0.2s ease;
+    }
+    #emptyStoryNotice button[data-action="load-builtin-pack"] {
+      transition: transform 0.35s var(--spring-bounce), box-shadow 0.35s var(--spring-smooth), border-color 0.25s ease;
+    }
+    #emptyStoryNotice button[data-action="load-builtin-pack"]:hover {
+      transform: translateY(-4px) scale(1.015);
+    }
+    #emptyStoryNotice button[data-action="load-builtin-pack"]:active {
+      transform: translateY(1px) scale(0.985);
+    }
+
+    /* 叙事与英语对白排版优化 */
+    #narrativeContainer {
+      position: relative;
+      z-index: 10;
+    }
+    #narrativeContainer .prose {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+      line-height: 1.84;
+      letter-spacing: 0.01em;
+    }
+    #narrativeContainer .prose p {
+      margin-top: 0.65em;
+      margin-bottom: 0.65em;
+    }
+    #narrativeContainer .prose blockquote {
+      background: rgba(15, 23, 42, 0.68);
+      border-left: 3px solid var(--hl-color, #8b5cf6);
+      border-radius: 0 0.75rem 0.75rem 0;
+      padding: 0.65rem 1rem;
+      font-style: normal;
+      color: #e2e8f0;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+
+    /* 丝滑消息气泡弹簧入场动效 */
+    @keyframes msg-spring-in {
+      0% { opacity: 0; transform: translateY(14px) scale(0.975); filter: blur(3px); }
+      70% { opacity: 1; transform: translateY(-1px) scale(1.003); filter: blur(0px); }
+      100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0px); }
+    }
+    .narrative-msg {
+      animation: msg-spring-in 0.42s var(--spring-bounce) both;
+    }
+    .narrative-msg > div:last-child {
+      backdrop-filter: blur(12px);
+      transition: transform 0.28s var(--spring-smooth), box-shadow 0.28s var(--spring-smooth), border-color 0.25s ease;
+      box-shadow: 0 12px 32px -10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+    .narrative-msg > div:last-child:hover {
+      transform: translateY(-1.5px);
+    }
+    .user-balloon {
+      backdrop-filter: blur(12px);
+      transition: transform 0.28s var(--spring-smooth), box-shadow 0.28s var(--spring-smooth);
+      box-shadow: 0 10px 28px -6px rgba(88, 28, 135, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+    }
+
+    /* 弹窗丝滑缩放动画 */
+    @keyframes modal-pop-in {
+      from { opacity: 0; transform: translateY(10px) scale(0.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    [role="dialog"]:not(.hidden) > div {
+      animation: modal-pop-in 0.28s var(--spring-bounce) both;
+    }
+
+    /* 语音实时律动声波动画 */
+    @keyframes eq-bar-dance {
+      0%, 100% { transform: scaleY(0.22); opacity: 0.55; }
+      50% { transform: scaleY(1); opacity: 1; }
+    }
+    #voiceWaveBars > span {
+      display: inline-block;
+      width: 3px;
+      height: 14px;
+      border-radius: 2px;
+      transform-origin: bottom;
+      animation: eq-bar-dance 0.65s infinite ease-in-out;
+    }
+    #voiceWaveBars > span:nth-child(2n) { animation-duration: 0.48s; animation-delay: 0.12s; }
+    #voiceWaveBars > span:nth-child(3n) { animation-duration: 0.78s; animation-delay: 0.24s; }
+    #voiceWaveBars > span:nth-child(4n) { animation-duration: 0.55s; animation-delay: 0.07s; }
+
+    /* 🎭 剧场专注模式 (Stage Focus Mode)：收起侧栏干扰，放大 3D 舞台与居中剧本流 */
+    body[data-stage-focus="1"] #sidebarRail,
+    body[data-stage-focus="1"] #leftSidebar,
+    body[data-stage-focus="1"] #rightSidebar {
+      display: none !important;
+    }
+    body[data-stage-focus="1"] #narrativeContainer {
+      max-width: 58rem;
+      margin-left: auto;
+      margin-right: auto;
+      width: 100%;
+    }
+    body[data-stage-focus="1"] #bottomCommandDeck {
+      max-width: 56rem;
+      margin-left: auto;
+      margin-right: auto;
+      width: 100%;
+      margin-bottom: 0.75rem;
+      border-radius: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    /* ==========================================================================
+       📜 复古画报设计系统 (1930s Literary Broadsheet) + 全局可切换舒适配色变量
+       灵感源自《The New Yorker》《The Paris Review》：
+       暖质报刊纸、双线铅字墨框、首字下沉、打字机手稿签，支持在「偏好设置」中一键切换全局配色
+       ========================================================================== */
+    :root {
+      --ed-bg-main: #f2eadb;
+      --ed-bg-panel: #ece1cc;
+      --ed-bg-surface: #faf6ee;
+      --ed-bg-elevated: #e5d8c0;
+      --ed-ink: #181512;
+      --ed-ink-muted: #5c5245;
+      --ed-border: #181512;
+      --ed-border-soft: #b8a686;
+      --ed-primary: #a62620;
+      --ed-primary-hover: #8b1e19;
+      --ed-primary-tint: #f8ebe8;
+      --ed-accent: #1b4332;
+      --ed-accent-tint: #e8f1eb;
+      --ed-paper-dot-1: rgba(24, 21, 18, 0.045);
+      --ed-paper-dot-2: rgba(166, 38, 32, 0.03);
+      --ed-card-shadow: rgba(24, 21, 18, 0.16);
+    }
+
+    main > section {
+      background: transparent !important;
+    }
+
+    /* 彻底隐藏背景画布层，保持界面纯粹干净 */
+    #threeStageWrap {
+      display: none !important;
+    }
+
+    body {
+      color: var(--ed-ink) !important;
+      background-color: var(--ed-bg-main) !important;
+      background-image:
+        radial-gradient(var(--ed-paper-dot-1) 0.75px, transparent 0.75px),
+        radial-gradient(var(--ed-paper-dot-2) 0.75px, var(--ed-bg-main) 0.75px) !important;
+      background-size: 24px 24px !important;
+      background-position: 0 0, 12px 12px !important;
+      font-family: 'Georgia', 'Noto Serif SC', 'Songti SC', 'STSong', 'SimSun', serif;
+    }
+
+    /* 顶部报头刊头栏 (Broadsheet Masthead) */
+    header {
+      background: var(--ed-bg-panel) !important;
+      border-bottom: 4px double var(--ed-border) !important;
+      box-shadow: 0 2px 0 rgba(24, 21, 18, 0.06) !important;
+      color: var(--ed-ink) !important;
+    }
+    #headerBrandBadge {
+      background: var(--ed-primary) !important;
+      color: #faf6ee !important;
+      border: 1.5px solid var(--ed-border) !important;
+      border-radius: 2px !important;
+      box-shadow: 2px 2px 0px var(--ed-border) !important;
+      font-family: 'Georgia', serif;
+    }
+    #headerBrandTag {
+      background: var(--ed-bg-surface) !important;
+      color: var(--ed-primary) !important;
+      border: 1px solid var(--ed-border) !important;
+      border-radius: 2px !important;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+
+    /* 接管全局侧栏与底栏，转化为报刊纸、索引卡与铅字墨线 */
+    #sidebarRail,
+    #leftSidebar,
+    #rightSidebar,
+    #bottomCommandDeck {
+      background: var(--ed-bg-panel) !important;
+      border-color: var(--ed-border) !important;
+      color: var(--ed-ink) !important;
+    }
+    #sidebarRail {
+      border-right: 1.5px solid var(--ed-border) !important;
+    }
+    #leftSidebar {
+      border-right: 2px solid var(--ed-border) !important;
+      box-shadow: 6px 0 0 var(--ed-card-shadow) !important;
+    }
+    #rightSidebar {
+      border-left: 1.5px solid var(--ed-border) !important;
+    }
+    #bottomCommandDeck {
+      border-top: 3px double var(--ed-border) !important;
+      background: var(--ed-bg-panel) !important;
+    }
+
+    /* 深度覆盖内部 slate / purple / cyan / emerald / amber 类名，自动跟随全局配色变量 */
+    [class*="bg-slate-950"],
+    [class*="bg-slate-900"] {
+      background-color: var(--ed-bg-surface) !important;
+      color: var(--ed-ink) !important;
+    }
+    [class*="bg-slate-800"] {
+      background-color: var(--ed-bg-elevated) !important;
+      color: var(--ed-ink) !important;
+    }
+    [class*="border-slate-800"],
+    [class*="border-slate-700"] {
+      border-color: var(--ed-border-soft) !important;
+    }
+    [class*="bg-purple-950"],
+    [class*="bg-purple-900"] {
+      background-color: var(--ed-primary-tint) !important;
+      color: var(--ed-primary) !important;
+      border-color: var(--ed-primary) !important;
+    }
+    [class*="bg-purple-600"] {
+      background-color: var(--ed-primary) !important;
+      color: #faf6ee !important;
+      border: 1px solid var(--ed-border) !important;
+    }
+    [class*="bg-cyan-950"],
+    [class*="bg-emerald-950"] {
+      background-color: var(--ed-accent-tint) !important;
+      color: var(--ed-accent) !important;
+      border-color: var(--ed-accent) !important;
+    }
+    [class*="bg-amber-950"],
+    [class*="bg-amber-900"] {
+      background-color: var(--ed-bg-elevated) !important;
+      color: var(--ed-primary) !important;
+      border-color: var(--ed-border-soft) !important;
+    }
+    [class*="bg-red-950"],
+    [class*="bg-rose-950"] {
+      background-color: var(--ed-primary-tint) !important;
+      color: var(--ed-primary) !important;
+      border-color: var(--ed-primary) !important;
+    }
+    [class*="text-slate-100"],
+    [class*="text-slate-200"],
+    [class*="text-slate-300"] {
+      color: var(--ed-ink) !important;
+    }
+    [class*="text-slate-400"],
+    [class*="text-slate-500"],
+    [class*="text-slate-600"] {
+      color: var(--ed-ink-muted) !important;
+    }
+    [class*="text-purple-400"],
+    [class*="text-purple-300"],
+    [class*="text-purple-200"] {
+      color: var(--ed-primary) !important;
+    }
+    [class*="text-cyan-400"],
+    [class*="text-cyan-300"],
+    [class*="text-emerald-400"],
+    [class*="text-emerald-300"] {
+      color: var(--ed-accent) !important;
+    }
+    [class*="text-amber-400"],
+    [class*="text-amber-300"],
+    [class*="text-amber-200"] {
+      color: var(--ed-primary) !important;
+    }
+
+    /* 复古画报：首页刊头折页与双栏专栏版式 (#emptyStoryNotice) */
+    #editorialSpreadSheet {
+      background: var(--ed-bg-surface) !important;
+      border: 2px solid var(--ed-border) !important;
+      border-radius: 2px !important;
+      box-shadow: 6px 6px 0px var(--ed-border), 12px 12px 0px var(--ed-card-shadow) !important;
+    }
+    #emptyStoryNotice button[data-action="load-builtin-pack"] {
+      background: var(--ed-bg-surface) !important;
+      border: 1.5px solid var(--ed-border) !important;
+      border-radius: 2px !important;
+      box-shadow: 3px 3px 0px var(--ed-border) !important;
+    }
+    #emptyStoryNotice button[data-action="load-builtin-pack"]:hover {
+      background: var(--ed-bg-main) !important;
+      border-color: var(--ed-primary) !important;
+      box-shadow: 5px 5px 0px var(--ed-primary) !important;
+      transform: translate(-1.5px, -1.5px);
+    }
+
+    /* 复古画报：右侧档案柜与藏书票卡片 (#rightSidebar) */
+    #rightSidebar [data-section] {
+      background: var(--ed-bg-surface) !important;
+      border: 1.5px solid var(--ed-border) !important;
+      border-radius: 2px !important;
+      padding: 0.75rem !important;
+      box-shadow: 3px 3px 0px var(--ed-card-shadow) !important;
+    }
+    #hudTabBar {
+      background: var(--ed-bg-elevated) !important;
+      border: 1.5px solid var(--ed-border) !important;
+      border-radius: 2px !important;
+    }
+    #hudTabBar .hud-tab-btn {
+      border-radius: 1px !important;
+      color: var(--ed-ink-muted) !important;
+      font-weight: 700;
+    }
+    #hudTabBar .hud-tab-btn[class*="bg-slate-800"] {
+      background: var(--ed-primary) !important;
+      color: #faf6ee !important;
+    }
+    /* 复古版画斜线进度条 */
+    .bar-fill {
+      background-image: repeating-linear-gradient(
+        -45deg,
+        rgba(255, 255, 255, 0.22) 0px,
+        rgba(255, 255, 255, 0.22) 4px,
+        transparent 4px,
+        transparent 8px
+      ) !important;
+      border-radius: 0 !important;
+    }
+
+    /* 复古画报：文学剧本与小说排版流 (#narrativeContainer) */
+    #narrativeContainer .prose {
+      font-family: 'Georgia', 'Noto Serif SC', 'Songti SC', 'SimSun', serif !important;
+      color: var(--ed-ink) !important;
+      font-size: 0.94rem;
+      line-height: 1.9;
+    }
+    .narrative-msg > div:last-child {
+      background: var(--ed-bg-surface) !important;
+      border: 1.5px solid var(--ed-border) !important;
+      border-left: 4px solid var(--ed-primary) !important;
+      border-radius: 2px !important;
+      color: var(--ed-ink) !important;
+      box-shadow: 4px 4px 0px var(--ed-card-shadow) !important;
+      padding: 1.15rem 1.35rem !important;
+    }
+    /* 首字下沉 (Drop-Cap) */
+    .narrative-msg .prose > p:first-of-type::first-letter {
+      float: left;
+      font-size: 2.55em;
+      line-height: 0.86;
+      padding-right: 0.38rem;
+      padding-top: 0.06rem;
+      font-weight: 900;
+      color: var(--ed-primary);
+      font-family: 'Georgia', 'Times New Roman', serif;
+    }
+    #narrativeContainer .prose blockquote {
+      background: var(--ed-bg-elevated) !important;
+      border-left: 3px solid var(--ed-accent) !important;
+      border-radius: 0 !important;
+      color: var(--ed-ink) !important;
+      font-style: italic;
+    }
+    /* 玩家发言：打字机手稿便签 (Typewriter Cue Slip) */
+    .user-balloon {
+      background: var(--ed-bg-surface) !important;
+      color: var(--ed-ink) !important;
+      border: 1.5px solid var(--ed-border) !important;
+      border-radius: 2px !important;
+      box-shadow: 4px 4px 0px var(--ed-primary) !important;
+      font-family: 'Courier New', ui-monospace, 'Noto Serif SC', serif;
+      font-weight: 600;
+    }
+    #sendActionBtn {
+      background: var(--ed-primary) !important;
+      color: #faf6ee !important;
+      border: 1.5px solid var(--ed-border) !important;
+      border-radius: 2px !important;
+      box-shadow: 3px 3px 0px var(--ed-border) !important;
+      font-weight: 800;
+    }
+    #sendActionBtn:hover:not(:disabled) {
+      background: var(--ed-primary-hover) !important;
+      box-shadow: 4px 4px 0px var(--ed-border) !important;
+    }
+  </style>
+  <style id="dynamicAppThemeStyles"></style>
+</head>
+
+<body data-art-style="editorial" class="bg-slate-950 text-slate-100 h-screen h-[100dvh] max-h-screen flex flex-col font-sans antialiased overflow-hidden hl-mode-tag">
+
+  <!-- 顶部报头导航栏 -->
+  <header class="h-14 border-b border-slate-800 bg-slate-900/90 backdrop-blur flex items-center justify-between px-3 md:px-4 z-20 shrink-0 transition-colors duration-300">
+    <div class="flex items-center space-x-2 md:space-x-2.5">
+      <div id="headerBrandBadge" class="w-8 h-8 rounded-lg bg-gradient-to-tr from-purple-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-purple-500/20 text-white font-bold text-lg transition-all duration-300">
+        ❦
+      </div>
+      <div>
+        <h1 class="text-xs md:text-sm font-bold tracking-wide flex items-center gap-1.5 md:gap-2">
+          <span>奇点画报</span>
+          <span id="headerBrandTag" class="text-[10px] md:text-xs px-1.5 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800/60 font-mono transition-all">SPOKEN GAZETTE</span>
+        </h1>
+      </div>
+
+      <!-- 世界槽位选择 -->
+      <button id="openSlotModalBtn" class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800/90 hover:bg-slate-700/80 border border-slate-700 text-xs text-slate-200 transition" title="管理与切换不同口语情境存档">
+        <span class="text-purple-400">🌍</span>
+        <span id="headerSlotNameDisplay" class="font-medium max-w-[85px] md:max-w-[120px] truncate">我的世界</span>
+        <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+      </button>
+
+      <!-- 专注阅读模式开关 -->
+      <button type="button" id="toggleStageFocusBtn" class="hidden lg:flex items-center gap-1 px-2 py-1 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-[11px] text-slate-300 transition" title="切换画报通栏专注模式（收起左右侧栏，沉浸体验跨页剧本阅读与口语对话）">
+        <span>📖</span>
+        <span id="stageFocusBtnText">画报专注</span>
+      </button>
+    </div>
+
+    <div class="flex items-center space-x-1.5 md:space-x-2">
+      <button id="openWizardBtn" class="px-2.5 py-1.5 text-xs font-medium bg-purple-950/60 hover:bg-purple-900/80 text-purple-200 rounded-lg border border-purple-700/60 transition flex items-center gap-1" title="打开学习者与角色创建向导">
+        <span>🧙</span>
+        <span class="hidden sm:inline">创建向导</span>
+      </button>
+
+      <button id="openTacticsModalBtn" class="px-2.5 py-1.5 text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg border border-slate-700 transition flex items-center gap-1" title="英语口语交际策略与表达锦囊">
+        <span>💬</span>
+        <span class="hidden sm:inline">口语锦囊</span>
+      </button>
+
+      <div id="apiStatusBadge" class="flex items-center space-x-1.5 text-xs px-2.5 py-1.5 rounded-full border border-red-800/50 bg-red-950/40 text-red-300">
+        <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+        <span id="apiStatusText" class="hidden lg:inline">未配置 API Key</span>
+      </div>
+
+      <button id="openApiSettingsBtn" class="px-2.5 py-1.5 text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg border border-slate-700 transition flex items-center gap-1" title="配置 API Key 与模型">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+        <span class="hidden md:inline">API</span>
+      </button>
+
+      <button id="openSettingsModalBtn" class="px-2.5 py-1.5 text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg border border-slate-700 transition flex items-center gap-1 shadow-sm" title="应用偏好设置">
+        <span id="headerThemeDot" class="w-2.5 h-2.5 rounded-full border border-white/40 shadow-sm" style="background-color: #8b5cf6;"></span>
+        <span class="hidden md:inline">偏好</span>
+      </button>
+
+      <button id="newSessionBtn" class="px-2.5 py-1.5 text-xs font-medium bg-red-950/40 hover:bg-red-900/60 text-red-200 rounded-lg border border-red-800/50 transition">
+        重置
+      </button>
+
+      <button id="exportSessionBtn" class="px-2 py-1.5 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg border border-slate-700 transition" title="导出对局存档与战报">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="flex-1 flex overflow-hidden min-h-0 h-full relative">
+
+    <!-- 左侧折叠坞栏 -->
+    <div id="sidebarRail" class="w-11 bg-slate-900/90 border-r border-slate-800 flex flex-col items-center py-3 select-none shrink-0 z-20 transition-all duration-300">
+      <button id="railExpandBtn" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center border border-slate-700 transition shadow-sm" title="展开世界设定与记忆面板">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+      </button>
+
+      <div id="railWorldIndicator" class="w-2 h-2 rounded-full bg-slate-700 my-2 transition" title="设定加载状态"></div>
+
+      <button id="railExpandTextBtn" class="flex-1 flex flex-col items-center justify-center writing-vertical text-[11px] font-medium text-slate-400 hover:text-slate-200 tracking-wider transition">
+        <span>世界观与设定</span>
+      </button>
+
+      <label for="loreFileInputRail" class="w-8 h-8 rounded-lg bg-slate-950/70 hover:bg-slate-800 text-slate-400 hover:text-slate-200 flex items-center justify-center border border-slate-800 cursor-pointer transition mt-auto" title="导入设定文件 (.txt, .md, .json)">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+        <input type="file" id="loreFileInputRail" accept=".txt,.md,.json" class="hidden" />
+      </label>
+    </div>
+
+    <!-- 左侧抽屉 -->
+    <aside id="leftSidebar" class="w-[21rem] md:w-96 border-r border-slate-800 bg-slate-900/95 backdrop-blur-md flex flex-col shrink-0 min-h-0 h-full transition-all duration-300 select-none overflow-hidden z-30 shadow-2xl hidden relative">
+      <div id="sidebarDropOverlay" class="absolute inset-0 bg-slate-950/[0.92] border-2 border-dashed border-purple-500 z-50 flex flex-col items-center justify-center p-6 text-center backdrop-blur-sm pointer-events-none hidden transition-all">
+        <div class="w-14 h-14 rounded-2xl bg-purple-950/80 border border-purple-700/80 flex items-center justify-center text-purple-300 mb-3 shadow-xl">
+          <svg class="w-7 h-7 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+        </div>
+        <span class="text-sm font-semibold text-slate-100 tracking-wide">释放文件以导入世界设定</span>
+        <span class="text-xs text-slate-400 mt-1">支持 .txt / .md / .json 格式</span>
+      </div>
+
+      <div class="p-3.5 border-b border-slate-800 flex items-center justify-between shrink-0">
+        <span class="text-xs font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+          <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+          世界设定与长线记忆
+        </span>
+        <div class="flex items-center gap-2.5">
+          <label for="loreFileInput" class="text-[11px] text-purple-400 hover:text-purple-300 cursor-pointer flex items-center gap-1 underline underline-offset-2">
+            <span>导入文件</span>
+            <input type="file" id="loreFileInput" accept=".txt,.md,.json" class="hidden" />
+          </label>
+          <button id="collapseSidebarBtn" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 transition" title="收起面板">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="flex-1 min-h-0 overflow-y-auto p-3.5 space-y-4 text-xs overscroll-contain">
+        <div id="loreDropZone" class="border border-dashed border-slate-700/80 hover:border-purple-500/70 bg-slate-950/60 hover:bg-slate-900/50 rounded-xl p-3 flex flex-col items-center justify-center text-center cursor-pointer transition group select-none">
+          <div class="w-8 h-8 rounded-lg bg-slate-900 group-hover:bg-purple-950/50 border border-slate-800 group-hover:border-purple-700/50 flex items-center justify-center text-slate-400 group-hover:text-purple-400 transition mb-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+          </div>
+          <div class="text-[11px] text-slate-300 font-medium">拖拽世界设定文件至此</div>
+          <div class="text-[10px] text-slate-500 mt-0.5">支持 .txt / .md / .json 格式</div>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="font-medium text-slate-300">世界法则 / 模组背景设定 (Story Worlds & AI Topic)</label>
+            <span class="text-[10px] text-slate-500">场景与词库</span>
+          </div>
+          <textarea id="worldLoreInput" rows="5" placeholder="在此输入 Story World 英语情境背景、NPC 语伴人设、Word Maze 目标词汇表与沟通任务..." class="w-full bg-slate-950/80 border border-slate-800 rounded-lg p-2.5 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-purple-500 leading-relaxed resize-y"></textarea>
+          
+          <div class="mt-1.5 flex justify-end">
+            <button type="button" id="analyzeLoreBtn" class="px-2.5 py-1 rounded bg-purple-950/80 hover:bg-purple-900 text-purple-200 border border-purple-800/80 text-[11px] flex items-center gap-1.5 transition">
+              <span id="analyzeLoreIcon">✨</span>
+              <span id="analyzeLoreText">通过 API 智能分析世界观并更新创建规则</span>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="font-medium text-slate-300">学习者与角色档案 (Learner Profile)</label>
+            <span class="text-[10px] text-slate-500">主角卡</span>
+          </div>
+          <textarea id="characterLoreInput" rows="4" placeholder="姓名、母语/文化背景、职业角色、CEFR 英语等级 (B1/B2/C1)、口语学习目标等..." class="w-full bg-slate-950/80 border border-slate-800 rounded-lg p-2.5 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-purple-500 leading-relaxed resize-y"></textarea>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="font-medium text-amber-300 flex items-center gap-1">
+              <span>📌</span>
+              <span>AI Memory 学习记忆锚点 (Memory Pins)</span>
+            </label>
+            <span class="text-[10px] text-slate-500">薄弱点与剧情防忘</span>
+          </div>
+          <textarea id="memoryPinsInput" rows="3" placeholder="高频语法薄弱点、已掌握的 Word Maze 词汇、重要剧情拐点与 NPC 承诺等长期记忆..." class="w-full bg-slate-950/80 border border-amber-900/40 rounded-lg p-2.5 text-amber-200/90 placeholder:text-slate-600 focus:outline-none focus:border-amber-500 leading-relaxed resize-y font-mono text-[11px]"></textarea>
+          <div class="flex items-center gap-2 mt-1.5">
+            <button type="button" id="extractPinsBtn" class="px-2 py-0.5 rounded bg-amber-900/50 hover:bg-amber-800/60 text-amber-200 text-[10px] border border-amber-800/50 shrink-0 transition disabled:opacity-50 disabled:cursor-not-allowed">
+              <span id="extractPinsIcon" class="inline-block">✨</span>
+              <span id="extractPinsText">让 AI 提炼锚点</span>
+            </button>
+            <label class="text-[10px] text-slate-500 shrink-0" title="设为 0 表示只在手动点按钮时更新">每
+              <input type="number" id="pinsAutoIntervalInput" min="0" max="99" value="0" class="w-10 bg-slate-950 border border-slate-800 rounded px-1 py-0.5 text-slate-300 text-[10px] text-center align-middle">
+              回合自动更新
+            </label>
+          </div>
+        </div>
+
+        <!-- GM 规则也有自己的拖放落点：拖到这里只替换规则栏，不会覆盖世界法则。
+             高亮态用 data-drop-active 属性而不是 class —— 自定义 class 会被 CSS 覆盖率测试
+             当成"疑似工具类"报缺失（与拖拽行标记用 data-drag-row 同一个理由）。 -->
+        <div id="rulesDropBlock" class="rounded-lg border border-transparent transition data-[drop-active]:border-purple-500/70 data-[drop-active]:bg-purple-950/20">
+          <div class="flex items-center justify-between mb-1">
+            <label class="font-medium text-slate-300">AI Tutor 教学与叙事规则 (Tutor & GM Rules)</label>
+            <div class="flex items-center gap-2">
+              <label for="rulesFileInput" class="text-[10px] text-purple-400 hover:text-purple-300 cursor-pointer flex items-center gap-1 underline underline-offset-2">
+                <span>导入文件</span>
+                <input type="file" id="rulesFileInput" accept=".txt,.md,.json" class="hidden" />
+              </label>
+              <span class="text-[10px] text-slate-500">双核约束</span>
+            </div>
+          </div>
+          <textarea id="rulesInput" rows="3" placeholder="Story Worlds 英语叙事难度、AI Tutor 实时纠错 (Recast) 风格、Word Maze 词汇激活规则等..." class="w-full bg-slate-950/80 border border-slate-800 rounded-lg p-2.5 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-purple-500 leading-relaxed resize-y"></textarea>
+          <div class="text-[10px] text-slate-500 mt-1">可把 .txt / .md 规则文件拖到本栏导入（只替换这一栏，不动上面其它设定）</div>
+        </div>
+
+        <div class="pt-2 flex gap-2">
+          <button id="saveLoreBtn" class="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded border border-slate-700 font-medium transition text-center">
+            保存全部设定
+          </button>
+          <button id="clearLoreBtn" class="px-3 py-1.5 bg-red-950/40 hover:bg-red-900/60 text-red-300 rounded border border-red-800/40 font-medium transition" title="清空设定输入框">
+            清空
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- 中央叙事区域 -->
+    <section class="flex-1 flex flex-col bg-slate-950 min-w-0 min-h-0 h-full relative overflow-hidden">
+      <!-- 保持 DOM 节点供静态校验，但彻底隐藏背景干扰 -->
+      <div id="threeStageWrap" class="hidden">
+        <canvas id="threeStageCanvas"></canvas>
+        <div id="threeStageTelemetry" class="hidden">
+          <span id="threeStageLabel"></span>
+        </div>
+      </div>
+
+      <div id="narrativeContainer" class="flex-1 min-h-0 overflow-y-auto p-4 md:p-6 space-y-6 overscroll-contain scroll-smooth text-sm">
+        <div id="emptyStoryNotice" class="min-h-full flex flex-col items-center justify-center max-w-3xl mx-auto py-2 px-2 text-slate-400">
+          <!-- 刊物折页主版面：彻底告别传统空状态模板，采用 1930s《纽约客》与文学画报头版跨页排版 -->
+          <div id="editorialSpreadSheet" class="w-full bg-slate-900/95 border border-slate-800 p-5 md:p-7 space-y-5 shadow-2xl">
+            
+            <!-- 1. 画报报头刊头栏 (Broadsheet Masthead & Issue Dateline) -->
+            <div class="border-b-2 border-slate-800 pb-3.5 space-y-2 text-center">
+              <div class="flex flex-wrap items-center justify-between text-[10px] font-mono tracking-widest uppercase border-b border-slate-800/80 pb-1.5 text-slate-400">
+                <span>VOL. IX · NO. 42</span>
+                <span class="font-bold text-purple-400">THE SINGULARITY GAZETTE · 奇点英语交互画报</span>
+                <span>SAN FRANCISCO &amp; NEW HAVEN EDITION</span>
+              </div>
+
+              <div class="pt-1">
+                <div class="text-[11px] font-mono tracking-widest uppercase text-purple-400 mb-1">
+                  — ❦ INTERACTIVE SPOKEN ENGLISH DRAMA &amp; LITERARY BROADSHEET ❦ —
+                </div>
+                <h2 class="text-xl md:text-2xl font-extrabold text-slate-100 tracking-tight leading-snug">
+                  “All the World’s a Stage — Speak Your Part in Living English.”
+                </h2>
+                <p class="text-xs text-slate-400 mt-1.5 max-w-xl mx-auto leading-relaxed">
+                  把世界当作舞台，在鲜活的跨文化剧场中开口入戏。展开下方任一画报专栏特稿即可载入完整世界蓝图与词汇迷宫；配置 API 后点击左下角 <span class="text-slate-200 font-semibold">🎙️ 语音开口</span> 或打字即可演绎你的台词。
+                </p>
+              </div>
+            </div>
+
+            <!-- 2. 双栏画报特稿版面 (Two-Column Illustrated Feature Spread) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
+              
+              <!-- 特稿一：硅谷路演与咖啡馆实战 -->
+              <button type="button" data-action="load-builtin-pack" data-pack="silicon-valley" class="group p-4 rounded-xl bg-slate-950/90 hover:bg-slate-900 border border-slate-800 transition-all flex flex-col justify-between space-y-3 text-left">
+                <div class="space-y-2.5">
+                  <div class="flex items-center justify-between border-b border-slate-800/80 pb-1.5">
+                    <span class="text-[10px] font-mono uppercase tracking-wider text-purple-400 font-bold">DISPATCH NO. 01 · SOMA, SF</span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-purple-950/80 text-purple-300 border border-purple-800/60 font-mono">CEFR B2</span>
+                  </div>
+
+                  <div class="flex items-start gap-2.5">
+                    <div class="w-9 h-9 rounded border border-slate-700 bg-slate-900 flex items-center justify-center shrink-0 text-base">
+                      ☕
+                    </div>
+                    <div>
+                      <div class="text-sm font-extrabold text-slate-100 group-hover:text-purple-300 transition leading-snug">
+                        硅谷路演与咖啡馆实战
+                      </div>
+                      <div class="text-[10px] font-mono text-slate-500 italic">
+                        The SoMa Pitch &amp; Blue Bottle Encounter
+                      </div>
+                    </div>
+                  </div>
+
+                  <p class="text-xs text-slate-300 leading-relaxed">
+                    <span class="font-bold text-base text-purple-400 mr-0.5">旧</span>金山 SoMa 街区清晨：在手冲咖啡馆与资深 AI 架构师自然破冰（Small Talk），白板前碰撞产品痛点，并在电梯巧遇红杉合伙人时完成 3 分钟全英文路演。
+                  </p>
+
+                  <div class="pt-1 flex flex-wrap gap-1">
+                    <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-400">elevator pitch</span>
+                    <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-400">value proposition</span>
+                    <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-400">traction</span>
+                  </div>
+                </div>
+
+                <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px] font-bold text-purple-400">
+                  <span>✦ 翻开第一卷 · 载入特稿剧场</span>
+                  <span class="font-mono">READ &amp; SPEAK →</span>
+                </div>
+              </button>
+
+              <!-- 特稿二：常春藤校园研讨与社团破冰 -->
+              <button type="button" data-action="load-builtin-pack" data-pack="ivy-campus" class="group p-4 rounded-xl bg-slate-950/90 hover:bg-slate-900 border border-slate-800 transition-all flex flex-col justify-between space-y-3 text-left">
+                <div class="space-y-2.5">
+                  <div class="flex items-center justify-between border-b border-slate-800/80 pb-1.5">
+                    <span class="text-[10px] font-mono uppercase tracking-wider text-cyan-400 font-bold">DISPATCH NO. 02 · IVY QUAD</span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-cyan-950/80 text-cyan-300 border border-cyan-800/60 font-mono">CEFR B2</span>
+                  </div>
+
+                  <div class="flex items-start gap-2.5">
+                    <div class="w-9 h-9 rounded border border-slate-700 bg-slate-900 flex items-center justify-center shrink-0 text-base">
+                      🎓
+                    </div>
+                    <div>
+                      <div class="text-sm font-extrabold text-slate-100 group-hover:text-cyan-300 transition leading-snug">
+                        常春藤校园研讨与社团破冰
+                      </div>
+                      <div class="text-[10px] font-mono text-slate-500 italic">
+                        The Autumn Quad &amp; Seminar Table
+                      </div>
+                    </div>
+                  </div>
+
+                  <p class="text-xs text-slate-300 leading-relaxed">
+                    <span class="font-bold text-base text-cyan-400 mr-0.5">北</span>美名校金秋开学季：在百年红砖草坪的社团招新集市侃侃而谈，在全英文 Seminar 圆桌讨论中礼貌插话交锋，并走进教授 Office Hours 争取研究署名。
+                  </p>
+
+                  <div class="pt-1 flex flex-wrap gap-1">
+                    <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-400">devil's advocate</span>
+                    <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-400">pick your brain</span>
+                    <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-400">bandwidth</span>
+                  </div>
+                </div>
+
+                <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px] font-bold text-cyan-400">
+                  <span>✦ 翻开第二卷 · 载入特稿剧场</span>
+                  <span class="font-mono">READ &amp; SPEAK →</span>
+                </div>
+              </button>
+            </div>
+
+            <!-- 3. 画报底栏编务与档案入口 (Editorial Colophon Strip) -->
+            <div class="pt-3 border-t-2 border-slate-800 flex flex-wrap items-center justify-between gap-2 text-xs">
+              <div class="text-[11px] font-mono text-slate-400">
+                <span>✒️ 提示：AI 导师建议默认隐藏，仅在您点击下方「💡 获取 AI 导师建议」时按需批注。</span>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                <button data-action="start-wizard" class="px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white rounded text-xs font-semibold shadow-sm transition">
+                  🧙 撰写角色履历
+                </button>
+                <button data-action="expand-lore" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-xs font-medium border border-slate-700 transition">
+                  📖 翻阅剧本卷宗
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <button id="scrollToBottomBtn" class="hidden absolute bottom-40 right-6 z-20 px-3 py-1.5 bg-purple-600/90 hover:bg-purple-500 text-white rounded-full shadow-2xl border border-purple-400/40 text-xs flex items-center gap-1.5 backdrop-blur transition-all duration-200 hover:scale-105 active:scale-95">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+        <span id="scrollBtnText">跳至最新内容</span>
+      </button>
+
+      <div id="bottomCommandDeck" class="p-3 md:p-4 bg-slate-900/80 border-t border-slate-800 backdrop-blur shrink-0 space-y-2 z-10 transition-colors duration-300">
+        <!-- 按需展开的 AI Tutor 建议与口语纠错面板（默认隐藏，用户点击按钮才请求/展开） -->
+        <div id="tutorAdvicePanel" class="hidden rounded-xl bg-slate-950/90 border border-purple-800/60 p-3 space-y-2 text-xs shadow-lg max-h-52 overflow-y-auto">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-1.5">
+            <span class="font-semibold text-purple-300 flex items-center gap-1.5">
+              <span>🎓</span>
+              <span id="tutorAdviceTitle">AI Tutor 口语诊断与地道回答建议</span>
+            </span>
+            <div class="flex items-center gap-2">
+              <button type="button" id="refreshTutorAdviceBtn" class="px-2 py-0.5 rounded bg-purple-950/80 hover:bg-purple-900 text-purple-200 border border-purple-700/60 text-[11px] transition">🔄 重新生成建议</button>
+              <button type="button" id="closeTutorAdviceBtn" class="text-slate-400 hover:text-slate-200 px-1">✕</button>
+            </div>
+          </div>
+          <div id="tutorAdviceBody" class="text-slate-200 leading-relaxed space-y-2"></div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-400 px-1">
+          <div class="flex flex-wrap items-center gap-1.5">
+            <button type="button" id="requestTutorAdviceBtn" class="px-2.5 py-1 rounded-lg bg-purple-950/80 hover:bg-purple-900 text-purple-200 border border-purple-700/70 text-[11px] font-medium flex items-center gap-1 transition shadow-sm" title="不直接剧透建议，点击后由 AI 导师按需提供上一轮纠错与下一轮地道英语回答示范">
+              <span id="requestTutorAdviceIcon">💡</span>
+              <span id="requestTutorAdviceText">获取 AI 导师建议</span>
+            </button>
+            <button type="button" id="stopVoicePlayBtn" class="hidden px-2 py-1 rounded-lg bg-rose-950/80 hover:bg-rose-900 text-rose-200 border border-rose-700/70 text-[11px] font-medium flex items-center gap-1 transition">
+              <span>⏹</span>
+              <span>停止朗读</span>
+            </button>
+            <!-- 实时音频/语音律动声波条 -->
+            <div id="voiceWaveBars" class="hidden items-end gap-0.5 px-2 py-0.5 rounded bg-slate-950/80 border border-purple-500/40 text-purple-400" title="实时语音能量律动">
+              <span class="bg-purple-400"></span>
+              <span class="bg-cyan-400"></span>
+              <span class="bg-emerald-400"></span>
+              <span class="bg-amber-400"></span>
+              <span class="bg-purple-400"></span>
+              <span class="bg-cyan-400"></span>
+              <span class="bg-rose-400"></span>
+              <span class="bg-emerald-400"></span>
+            </div>
+            <span class="text-[11px] text-slate-600 mx-0.5">|</span>
+            <span class="text-[11px] text-slate-500 font-medium">检定:</span>
+            <button data-action="roll-dice" data-sides="20" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-[11px] transition font-mono">d20</button>
+            <button data-action="roll-dice" data-sides="100" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-[11px] transition font-mono">d100</button>
+            <button data-action="roll-dice" data-sides="6" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-[11px] transition font-mono">d6</button>
+            <button data-action="roll-dice" data-sides="10" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-[11px] transition font-mono">d10</button>
+            <span id="diceRollBadge" class="hidden text-amber-400 font-mono text-xs px-2 py-0.5 bg-amber-950/40 border border-amber-800/60 rounded"></span>
+          </div>
+          <div class="text-[11px] text-slate-500 hidden sm:block">
+            点按文中<strong>高亮词汇</strong>可发音、造句、入库与 AI 精讲
+          </div>
+        </div>
+
+        <!-- 实时联动：本轮剧情高亮热词 & 待激活词条（输入命中即实时变绿，发送自动解锁） -->
+        <div id="activeHighlightBar" class="hidden px-2 py-1.5 rounded-lg bg-slate-950/80 border border-slate-800 flex flex-wrap items-center gap-1.5 text-[11px]"></div>
+
+        <div class="flex items-stretch gap-2">
+          <button type="button" id="voiceInputBtn" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-medium flex flex-col items-center justify-center gap-0.5 shrink-0 transition" title="点击开始英语语音识别 (STT)，再次点击结束录音">
+            <span id="voiceInputIcon" class="text-base leading-none">🎙️</span>
+            <span id="voiceInputText" class="text-[10px] text-slate-300">语音开口</span>
+          </button>
+
+          <textarea id="playerInput" rows="2" placeholder="点击左侧【🎙️ 语音开口】直接说英语，或打字与剧中人物对话；卡壳时可点上方【💡 获取 AI 导师建议】..." class="flex-1 bg-slate-950/80 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder:text-slate-600 focus:outline-none focus:border-purple-500/70 focus:ring-1 focus:ring-purple-500/50 resize-none max-h-36 overflow-y-auto leading-relaxed transition-all shadow-inner"></textarea>
+          
+          <button id="sendActionBtn" class="btn-deduce group/btn relative inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs font-semibold text-white tracking-wide transition-all duration-200 overflow-hidden select-none disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-md self-stretch shrink-0">
+            <span class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700 pointer-events-none"></span>
+            <span id="sendBtnIconSlot" class="flex items-center justify-center transition-transform duration-200 group-hover/btn:translate-x-0.5">
+              <svg id="sendBtnIcon" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </span>
+            <span id="sendBtnText" class="font-medium text-xs">行动推演</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 右侧 HUD 面板 -->
+    <aside id="rightSidebar" class="w-80 md:w-[22rem] border-l border-slate-800 bg-slate-900/70 flex flex-col shrink-0 min-h-0 h-full select-none overflow-hidden transition-colors duration-300">
+      <div class="p-3 border-b border-slate-800 flex items-center justify-between shrink-0">
+        <span class="text-xs font-semibold text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
+          <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+          角色与数据面板
+        </span>
+        <div class="flex items-center gap-2.5">
+          <button id="openSchemaModalBtn" class="text-[11px] text-purple-400 hover:text-purple-300 underline underline-offset-2">
+            世界蓝图
+          </button>
+          <button id="toggleEditHudBtn" class="text-[11px] text-emerald-400 hover:text-emerald-300 underline underline-offset-2">
+            微调数值
+          </button>
+        </div>
+      </div>
+
+      <div class="p-2 border-b border-slate-800/80 bg-slate-950/40 shrink-0">
+        <div id="hudTabBar" class="flex gap-1 rounded-lg bg-slate-900 p-0.5 border border-slate-800 text-[11px] overflow-x-auto"></div>
+      </div>
+
+      <div id="hudScrollContainer" class="flex-1 min-h-0 overflow-y-auto p-3.5 space-y-4 text-xs overscroll-contain"></div>
+
+      </aside>
+  </main>
+
+  <!-- 模态框：角色向导 -->
+  <div id="wizardModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-3 md:p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 w-full max-w-xl rounded-2xl shadow-2xl p-4 md:p-5 space-y-4 max-h-[92vh] overflow-y-auto overscroll-contain transition-all">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-2">
+          <div class="w-7 h-7 rounded-lg bg-purple-950/80 border border-purple-700/80 flex items-center justify-center text-purple-300 text-sm">🧙</div>
+          <div>
+            <h3 class="text-sm font-bold text-slate-100">角色创建向导</h3>
+            <p class="text-[10px] text-slate-500">支持自由设定、点选预设胶囊或调用大模型识别世界法则</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" id="toggleWizardConfigBtn" class="text-[11px] text-purple-400 hover:text-purple-300 px-2 py-0.5 rounded bg-purple-950/60 border border-purple-800/60">⚙️ 调整选项与规则</button>
+          <button id="closeWizardModalBtn" class="text-slate-400 hover:text-slate-200 text-sm">✕</button>
+        </div>
+      </div>
+
+      <div id="wizardConfigPanel" class="hidden p-3 rounded-xl bg-slate-950/90 border border-purple-800/60 space-y-3 text-xs">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-1.5">
+          <span class="font-semibold text-purple-300">⚙️ 世界创建规则与预设项配置</span>
+          <button type="button" id="autoExtractWizardRulesBtn" class="text-[11px] text-emerald-400 hover:text-emerald-300 underline flex items-center gap-1">
+            <span id="autoExtractIcon">✨</span>
+            <span id="autoExtractText">调用 API 自动从当前世界设定提取</span>
+          </button>
+        </div>
+        <div class="space-y-2">
+          <div>
+            <label class="block text-slate-300 text-[11px] mb-0.5">可选种族列表 (以逗号或空格隔开)</label>
+            <input type="text" id="cfgRacesInput" class="w-full bg-slate-900 border border-slate-800 rounded px-2.5 py-1 text-slate-200 text-xs font-mono">
+          </div>
+          <div>
+            <label class="block text-slate-300 text-[11px] mb-0.5">可选职业/流派列表 (以逗号或空格隔开)</label>
+            <input type="text" id="cfgClassesInput" class="w-full bg-slate-900 border border-slate-800 rounded px-2.5 py-1 text-slate-200 text-xs font-mono">
+          </div>
+          <div>
+            <label class="block text-slate-300 text-[11px] mb-0.5">可选身份/阶层列表 (以逗号或空格隔开)</label>
+            <input type="text" id="cfgIdentitiesInput" class="w-full bg-slate-900 border border-slate-800 rounded px-2.5 py-1 text-slate-200 text-xs font-mono">
+          </div>
+          <div>
+            <label class="block text-slate-300 text-[11px] mb-0.5">核心分配属性列表 (以逗号隔开，如：力量,敏捷,体质,智力,感知)</label>
+            <input type="text" id="cfgAttributesInput" class="w-full bg-slate-900 border border-slate-800 rounded px-2.5 py-1 text-slate-200 text-xs font-mono">
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-slate-300 text-[11px] mb-0.5">属性分配点数总额</label>
+              <input type="number" id="cfgPointsPoolInput" value="25" class="w-full bg-slate-900 border border-slate-800 rounded px-2.5 py-1 text-slate-200 text-xs font-mono">
+            </div>
+            <div>
+              <label class="block text-slate-300 text-[11px] mb-0.5">单项初始上限</label>
+              <input type="number" id="cfgMaxPerStatInput" value="8" class="w-full bg-slate-900 border border-slate-800 rounded px-2.5 py-1 text-slate-200 text-xs font-mono">
+            </div>
+          </div>
+          <div class="flex justify-end pt-1">
+            <button type="button" id="saveWizardConfigBtn" class="px-3 py-1 bg-purple-600 hover:bg-purple-500 text-white rounded text-xs font-medium">应用选项配置</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="space-y-3.5 text-xs">
+        <!-- 角色创建字段由世界蓝图生成（不同世界观要问的东西不一样） -->
+        <div id="wizardFields" class="space-y-3.5"></div>
+
+        <div id="wizardPointBuy" class="p-3 bg-slate-950/90 rounded-xl border border-slate-800/90 space-y-2.5 hidden">
+          <div class="flex items-center justify-between">
+            <span id="pointBuyTitle" class="font-semibold text-slate-200">属性分配器</span>
+            <span class="text-[11px] font-mono font-bold px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
+              剩余点数: <span id="wizRemainingPoints">25</span> / <span id="wizTotalPointsLimit">25</span>
+            </span>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-5 gap-2" id="pointBuyGrid"></div>
+        </div>
+
+        <div id="wizardDice" class="p-3 bg-slate-950/90 rounded-xl border border-slate-800/90 space-y-2 hidden">
+          <div class="flex items-center justify-between">
+            <span class="font-semibold text-slate-200" id="wizDiceLabel">随机投骰</span>
+            <button type="button" data-action="roll-charisma" class="px-2.5 py-1 rounded bg-purple-600 hover:bg-purple-500 text-white font-medium text-[11px] shadow">
+              🎲 掷骰
+            </button>
+          </div>
+          <div class="flex items-center justify-between bg-slate-900/80 p-2 rounded-lg border border-slate-800 text-xs">
+            <span class="text-slate-400" id="wizChaFormulaDisplay">公式：基数 + 投骰波动</span>
+            <div class="font-mono text-sm font-bold text-amber-400">
+              <span id="wizDiceResultLabel">结果</span> = <span id="wizFinalCha">3</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-3 flex justify-end gap-2 border-t border-slate-800">
+        <button id="cancelWizardBtn" class="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs">
+          取消
+        </button>
+        <button id="completeWizardBtn" class="px-4 py-1.5 bg-purple-600 hover:bg-purple-500 text-white font-medium rounded-lg text-xs shadow-md">
+          踏入世界 (确认角色并生成开局)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 模态框：世界槽位管理 -->
+  <div id="slotModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl shadow-2xl p-5 space-y-4 transition-all">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-sm font-bold text-slate-100 flex items-center gap-2">
+          <span>🌍</span>
+          <span>世界观与存档管理</span>
+        </h3>
+        <button id="closeSlotModalBtn" class="text-slate-400 hover:text-slate-200">✕</button>
+      </div>
+
+      <p class="text-xs text-slate-400">
+        每个世界独立存储法则背景、角色数据、NPC 图鉴与推演记录。
+      </p>
+
+      <div class="p-3 bg-slate-950/80 rounded-xl border border-slate-800 space-y-2 text-xs">
+        <span class="font-semibold text-purple-300 block">＋ 创建新世界观</span>
+        <div class="flex gap-2">
+          <input type="text" id="newSlotNameInput" placeholder="输入世界名称..." class="flex-1 bg-slate-900 border border-slate-800 rounded px-2.5 py-1 text-slate-200 text-xs">
+          <button type="button" id="addNewSlotBtn" class="px-3 py-1 bg-purple-600 hover:bg-purple-500 text-white rounded text-xs font-semibold shrink-0">创建</button>
+        </div>
+      </div>
+
+      <div id="slotsListContainer" class="space-y-2 text-xs max-h-60 overflow-y-auto"></div>
+
+      <div class="flex justify-between items-center pt-2 border-t border-slate-800">
+        <button id="importSlotJsonBtn" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-xs">
+          📥 导入世界包
+        </button>
+        <button id="exportCurrentSlotBtn" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-xs">
+          📤 导出当前世界
+        </button>
+        <button id="closeSlotBtn" class="px-3.5 py-1.5 bg-purple-600 hover:bg-purple-500 text-white rounded text-xs font-semibold">
+          完成
+        </button>
+      </div>
+      <input type="file" id="slotJsonFileInput" accept=".json" class="hidden">
+    </div>
+  </div>
+
+  <!-- 模态框：口语交际策略与 AI Tutor 锦囊 -->
+  <div id="tacticsModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl shadow-2xl p-5 space-y-4 transition-all">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+        <h3 class="text-sm font-bold text-slate-100 flex items-center gap-2">
+          <span>💬</span>
+          <span>英语口语交际策略与表达锦囊</span>
+        </h3>
+        <button id="closeTacticsModalBtn" class="text-slate-400 hover:text-slate-200">✕</button>
+      </div>
+
+      <!-- 本局口语实战与词汇复盘看板 (借鉴 SpeakHub / Good-Scriber 闭环) -->
+      <div id="tacticsSessionStats" class="p-3 rounded-lg bg-slate-950/90 border border-slate-800 space-y-2 text-xs"></div>
+
+      <p class="text-xs text-slate-400">
+        点击下方口语交际脚手架（Speaking Scaffolds）或教练指令，填入输入框后补充你的具体想法即可发送：
+      </p>
+
+      <div class="grid grid-cols-2 gap-2 text-xs">
+        <button data-action="apply-tactic" data-tactic="[Break the Ice] Hey there! I couldn't help noticing what you were just talking about. Mind if I jump in? " class="p-2.5 rounded-lg bg-slate-950 border border-slate-800 hover:border-purple-500 text-left space-y-1 transition">
+          <div class="font-semibold text-slate-200">🗣️ Break the Ice</div>
+          <div class="text-[10px] text-slate-500">自然破冰寒暄，切入英文对话</div>
+        </button>
+
+        <button data-action="apply-tactic" data-tactic="[Pitch an Idea] Here's how I see it: our core advantage is... What do you think about taking this approach? " class="p-2.5 rounded-lg bg-slate-950 border border-slate-800 hover:border-purple-500 text-left space-y-1 transition">
+          <div class="font-semibold text-slate-200">💡 Pitch & Persuade</div>
+          <div class="text-[10px] text-slate-500">结构化陈述核心观点并征求反馈</div>
+        </button>
+
+        <button data-action="apply-tactic" data-tactic="[Clarify & Paraphrase] Just to make sure we're on the same page—are you saying that...? Could you elaborate a bit on that?" class="p-2.5 rounded-lg bg-slate-950 border border-slate-800 hover:border-purple-500 text-left space-y-1 transition">
+          <div class="font-semibold text-slate-200">🤔 Clarify & Paraphrase</div>
+          <div class="text-[10px] text-slate-500">礼貌追问细节或用英语复述确认</div>
+        </button>
+
+        <button data-action="apply-tactic" data-tactic="[Word Maze Challenge] 我想在接下来的对话中挑战使用右侧待激活的目标词汇，请引导我并在我用对时解锁它们： " class="p-2.5 rounded-lg bg-slate-950 border border-slate-800 hover:border-purple-500 text-left space-y-1 transition">
+          <div class="font-semibold text-slate-200">🧩 Word Maze 挑战</div>
+          <div class="text-[10px] text-slate-500">在真实语境中串联并激活目标词汇</div>
+        </button>
+
+        <button data-action="apply-tactic" data-tactic="[Ask AI Tutor] 卡壳求助：针对当前场景，请 AI Tutor 先给我 3 句不同难度（B1 / B2 / Native Idiomatic）的地道英语回复示范，让我选一句开口练习。" class="p-2.5 rounded-lg bg-slate-950 border border-slate-800 hover:border-purple-500 text-left space-y-1 transition">
+          <div class="font-semibold text-slate-200">🎓 呼叫 AI Tutor</div>
+          <div class="text-[10px] text-slate-500">获取分级地道表达示范与开口提示</div>
+        </button>
+
+        <button data-action="apply-tactic" data-tactic="[AI Summary Review] 请 AI Tutor 对我刚才这几轮的英语口语表现做一次阶段复盘（亮点表达、高频语法纠错 Recast、以及 Word Maze 词汇掌握情况）。" class="p-2.5 rounded-lg bg-slate-950 border border-slate-800 hover:border-purple-500 text-left space-y-1 transition">
+          <div class="font-semibold text-slate-200">📝 AI Summary 复盘</div>
+          <div class="text-[10px] text-slate-500">生成当前阶段的口语诊断与课程总结</div>
+        </button>
+      </div>
+
+      <div class="flex justify-end pt-2 border-t border-slate-800">
+        <button id="closeTacticsBtn" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-xs">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 模态框：API 设置 -->
+  <div id="apiModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl shadow-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto overscroll-contain transition-all">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-sm font-bold text-slate-100 flex items-center gap-2">
+          <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
+          大模型与语音 API 配置
+        </h3>
+        <button id="closeApiModalBtn" class="text-slate-400 hover:text-slate-200">✕</button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block font-medium text-slate-300 mb-1">接口协议类型</label>
+          <select id="apiProviderSelect" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-purple-500">
+            <option value="openai_compatible">DeepSeek / OpenAI 官方兼容协议</option>
+            <option value="gemini">Google Gemini API (官方原版)</option>
+            <option value="custom">自定义 (任意第三方 / 自建 OpenAI 兼容端点：OpenRouter、硅基流动、vLLM 等)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-medium text-slate-300 mb-1">API Key <span class="text-red-400">*</span></label>
+          <div class="relative">
+            <input type="password" id="apiKeyInput" placeholder="输入您的 API Key..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-purple-500 font-mono text-xs pr-9">
+            <button type="button" id="toggleApiKeyVisibility" class="absolute right-2.5 top-2.5 text-slate-500 hover:text-slate-300">
+              👁
+            </button>
+          </div>
+          <p class="text-[10px] text-slate-500 mt-1" id="apiKeyStorageNote">Key 只保存在本机，不会上传到任何中间服务器。</p>
+          <div class="flex items-center gap-2 mt-1.5">
+            <button type="button" id="secureStorageSelfTestBtn" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] border border-slate-700/60 shrink-0">测试安全存储</button>
+            <span id="secureStorageSelfTestResult" class="text-[10px] text-slate-500"></span>
+          </div>
+        </div>
+
+        <div id="baseUrlRow" class="hidden">
+          <label class="block font-medium text-slate-300 mb-1">API 基础地址 (Base URL)</label>
+          <input type="text" id="apiBaseUrlInput" placeholder="https://api.deepseek.com（官方）或 http://localhost:11434/v1" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-purple-500 font-mono text-xs">
+          <p class="text-[10px] text-slate-500 mt-1" id="baseUrlHint">兼容协议把地址填到 <code class="text-slate-400">/v1</code> 为止即可（自动补 <code class="text-slate-400">/chat/completions</code>）。除 DeepSeek / OpenAI / 本地地址外，其它域名请把上面的协议切成「自定义」。</p>
+
+          <!-- 自定义端点专属选项：只有协议选「自定义」时才显示（放在 baseUrlRow 内，Gemini 下随父级一起隐藏） -->
+          <div id="customEndpointRows" class="hidden mt-2 p-2.5 rounded-lg bg-slate-950/80 border border-slate-800 space-y-2">
+            <label class="flex items-start gap-2 cursor-pointer text-[11px] text-slate-300 select-none">
+              <input type="checkbox" id="customFullEndpointCheckbox" class="accent-purple-500 rounded w-3.5 h-3.5 mt-0.5 shrink-0">
+              <span>上面填的已是完整请求地址（原样请求，不再自动拼接 <code class="text-slate-400">/chat/completions</code>）</span>
+            </label>
+            <p id="customEndpointPreview" class="text-[10px] font-mono text-cyan-300/80 break-all"></p>
+
+            <div>
+              <label class="block font-medium text-slate-300 mb-1">额外请求参数 (JSON，可留空)</label>
+              <textarea id="customExtraParamsInput" rows="2" placeholder="{&quot;top_p&quot;: 0.9, &quot;presence_penalty&quot;: 0.2}" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-slate-200 focus:outline-none focus:border-purple-500 font-mono text-[11px] resize-y"></textarea>
+              <p class="text-[10px] text-slate-500 mt-1">会合并进请求体，可覆盖 <code class="text-slate-400">temperature</code> / <code class="text-slate-400">max_tokens</code> 等默认值；JSON 写错会当场拦下，不会发出半截请求。</p>
+            </div>
+
+            <div>
+              <label class="block font-medium text-slate-300 mb-1">自定义请求头 (JSON，可留空)</label>
+              <textarea id="customExtraHeadersInput" rows="2" placeholder="{&quot;HTTP-Referer&quot;: &quot;https://example.com&quot;, &quot;X-Title&quot;: &quot;singularity&quot;}" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-slate-200 focus:outline-none focus:border-purple-500 font-mono text-[11px] resize-y"></textarea>
+              <p class="text-[10px] text-slate-500 mt-1">OpenRouter 等中转站的站点标识走这里。键名只能是常规 HTTP 头名；<code class="text-slate-400">Authorization</code> 不填时自动用上面的 API Key。<b class="text-amber-400/80">不要把密钥写在这</b> —— 只有上面的 Key 字段会走 DPAPI 加密存储。</p>
+            </div>
+
+            <p class="text-[10px] text-slate-500">自定义端点不需要鉴权时（本机 Ollama / vLLM / 内网网关），API Key 可以留空。明文 <code class="text-slate-400">http://</code> 只放行 localhost / 127.0.0.1；局域网地址请用 HTTPS 或在 CSP 里自行追加。</p>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-medium text-slate-300 mb-1">模型名称 (Model Identifier)</label>
+          <input type="text" id="apiModelInput" value="deepseek-flash" placeholder="例如: deepseek-flash, deepseek-v4-pro, gpt-4o-mini" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-purple-500 font-mono text-xs">
+        </div>
+
+        <div id="thinkingModeRow" class="p-2.5 rounded-lg bg-slate-950/80 border border-slate-800">
+          <label class="flex items-center justify-between cursor-pointer">
+            <div>
+              <div class="font-medium text-slate-200">深度思考模式</div>
+              <div class="text-[10px] text-slate-500 mt-0.5">仅 DeepSeek 生效。开启后模型先输出思维链：<b class="text-amber-400/90">更慢更贵，且温度设置会失效</b>（官方限制）。本应用的提示词是一大堆互相牵制的硬性约束，<b>建议开启</b>：关闭后更容易漏 game_state、说重复话、露出机械腔。</div>
+            </div>
+            <input type="checkbox" id="settingThinkingMode" class="accent-purple-500 rounded w-4 h-4 shrink-0 ml-3">
+          </label>
+        </div>
+
+        <div>
+          <div class="flex justify-between items-center mb-1">
+            <label class="font-medium text-slate-300">文本输出上限 (Max Tokens)</label>
+            <label class="flex items-center gap-1.5 cursor-pointer text-[11px] text-slate-400 select-none">
+              <input type="checkbox" id="unlimitedTokensCheckbox" class="accent-purple-500 rounded">
+              <span>无上限 (不作限制)</span>
+            </label>
+          </div>
+          <input type="number" id="maxTokensInput" min="128" max="65536" step="128" value="4096" placeholder="例如: 4096" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-purple-500 font-mono text-xs">
+        </div>
+
+        <div>
+          <div class="flex justify-between mb-1">
+            <label class="font-medium text-slate-300">创意发散度 (Temperature)</label>
+            <span id="tempValueDisplay" class="font-mono text-purple-400">0.8</span>
+          </div>
+          <input type="range" id="tempSlider" min="0.1" max="1.5" step="0.05" value="0.8" class="w-full accent-purple-500 bg-slate-950">
+        </div>
+
+        <!-- 语音 API 接口配置 (TTS 英语朗读 & STT 语音输入) -->
+        <div class="pt-3 border-t border-slate-800 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="font-semibold text-purple-300 flex items-center gap-1.5">
+              <span>🎙️</span>
+              <span>英语口语语音 API 接口 (TTS 朗读 & STT 识别)</span>
+            </span>
+            <button type="button" id="testVoiceTtsBtn" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-[10px] transition">🔊 试听发音</button>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div>
+              <label class="block font-medium text-slate-300 mb-1">TTS 英语朗读引擎</label>
+              <select id="voiceTtsProviderSelect" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-slate-200 text-xs">
+                <option value="browser">浏览器原生美音 (免 Key 即用)</option>
+                <option value="openai_tts">OpenAI 兼容 TTS (/v1/audio/speech)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-medium text-slate-300 mb-1">STT 英语语音识别</label>
+              <select id="voiceSttProviderSelect" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-slate-200 text-xs">
+                <option value="browser">浏览器 Web Speech (免 Key 即用)</option>
+                <option value="openai_stt">Whisper 兼容 API (/v1/audio/transcriptions)</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="voiceCloudApiBox" class="p-2.5 rounded-lg bg-slate-950/90 border border-slate-800 space-y-2">
+            <div>
+              <label class="block font-medium text-slate-300 mb-1">语音 API Base URL <span class="text-[10px] text-slate-500">(选填，支持 OpenAI / 本地语音网关)</span></label>
+              <input type="text" id="voiceApiBaseUrlInput" value="https://api.openai.com/v1" placeholder="https://api.openai.com/v1 或 http://localhost:8000/v1" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-slate-200 font-mono text-xs">
+            </div>
+            <div>
+              <label class="block font-medium text-slate-300 mb-1">语音专用 API Key <span class="text-[10px] text-slate-500">(留空则自动复用上方主 API Key)</span></label>
+              <input type="password" id="voiceApiKeyInput" placeholder="留空复用主 API Key，或填写独立语音 Key..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-slate-200 font-mono text-xs">
+            </div>
+            <div class="grid grid-cols-3 gap-2">
+              <div>
+                <label class="block font-medium text-slate-300 mb-1">TTS 模型</label>
+                <input type="text" id="voiceTtsModelInput" value="tts-1" placeholder="tts-1" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-slate-200 font-mono text-xs">
+              </div>
+              <div>
+                <label class="block font-medium text-slate-300 mb-1">TTS 音色</label>
+                <select id="voiceTtsVoiceSelect" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-slate-200 text-xs">
+                  <option value="nova">nova (自然女声)</option>
+                  <option value="alloy">alloy (中性清晰)</option>
+                  <option value="echo">echo (沉稳男声)</option>
+                  <option value="shimmer">shimmer (温和女声)</option>
+                  <option value="onyx">onyx (深沉男声)</option>
+                  <option value="fable">fable (英式叙事)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block font-medium text-slate-300 mb-1">STT 模型</label>
+                <input type="text" id="voiceSttModelInput" value="whisper-1" placeholder="whisper-1" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-slate-200 font-mono text-xs">
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between gap-3 pt-1">
+            <label class="flex items-center gap-1.5 text-slate-300 cursor-pointer">
+              <input type="checkbox" id="voiceAutoPlayCheckbox" class="accent-purple-500 rounded">
+              <span>AI 回复后自动朗读英语台词</span>
+            </label>
+            <div class="flex items-center gap-1.5">
+              <span class="text-slate-400">语速:</span>
+              <select id="voiceSpeechRateSelect" class="bg-slate-950 border border-slate-800 rounded px-1.5 py-0.5 text-slate-200 text-xs">
+                <option value="0.8">0.8x 慢速清晰</option>
+                <option value="0.9">0.9x 适中偏慢</option>
+                <option value="1" selected>1.0x 母语常速</option>
+                <option value="1.15">1.15x 进阶快语速</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-2 border-t border-slate-800 space-y-1.5">
+        <div class="flex items-start gap-2">
+          <button type="button" id="testApiConnBtn" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-[11px] transition shrink-0">
+            🔌 测试连接
+          </button>
+          <span id="apiTestResult" class="text-[11px] text-slate-500 leading-snug break-all"></span>
+        </div>
+        <p class="text-[10px] text-slate-600">先点「测试连接」再保存：它会用当前填写的地址 / 模型 / Key 真发一次最小请求，把 HTTP 状态和服务端原话直接显示出来（正式对话走流式，这里用非流式以便看清错误）。</p>
+      </div>
+
+      <div class="pt-2 flex justify-end gap-2 border-t border-slate-800">
+        <button id="cancelApiModalBtn" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs transition">
+          取消
+        </button>
+        <button id="saveApiConfigBtn" class="px-4 py-1.5 bg-purple-600 hover:bg-purple-500 text-white font-medium rounded-lg text-xs transition">
+          保存并激活
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 模态框：偏好设置 -->
+  <div id="settingsModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl shadow-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto overscroll-contain transition-all">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-sm font-bold text-slate-100 flex items-center gap-2">
+          <span>🎨</span>
+          <span>偏好与个性化设置</span>
+        </h3>
+        <button id="closeSettingsModalBtn" class="text-slate-400 hover:text-slate-200">✕</button>
+      </div>
+
+      <div id="settingsAccordionContainer" class="space-y-3">
+        
+        <!-- 全局画报配色选择 -->
+        <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-950/40">
+          <button type="button" class="accordion-trigger w-full px-3.5 py-2.5 text-left flex items-center justify-between hover:bg-slate-800/40 transition" data-target="accordionTonePanel">
+            <div class="flex items-center gap-2 text-xs font-semibold text-slate-200">
+              <span>🎨</span>
+              <span>全局画报配色方案</span>
+              <span id="currentThemeLabel" class="text-[11px] font-normal px-2 py-0.5 rounded bg-slate-800 text-slate-300 ml-1">经典朱砂棉纸</span>
+            </div>
+            <svg class="accordion-arrow w-4 h-4 text-slate-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+          </button>
+          <div id="accordionTonePanel" class="p-3.5 border-t border-slate-800/80 space-y-2.5">
+            <p class="text-[11px] text-slate-400 leading-relaxed">选择舒适护眼的复古画报全局纸墨配色（实时联动纸张底色、铅字墨色、印泥主色与图表色调）：</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2" id="themePresetsGrid"></div>
+          </div>
+        </div>
+
+        <!-- 剧情高亮选择 -->
+        <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-950/40">
+          <button type="button" class="accordion-trigger w-full px-3.5 py-2.5 text-left flex items-center justify-between hover:bg-slate-800/40 transition" data-target="accordionHighlightPanel">
+            <div class="flex items-center gap-2 text-xs font-semibold text-slate-200">
+              <span>✨</span>
+              <span>剧情加粗信息高亮</span>
+              <span id="previewHighlightTagSummary" class="text-[11px] font-normal px-2 py-0.5 rounded bg-slate-800 text-slate-300 ml-1">胶囊微光</span>
+            </div>
+            <svg class="accordion-arrow w-4 h-4 text-slate-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+          </button>
+          <div id="accordionHighlightPanel" class="p-3.5 border-t border-slate-800/80 space-y-3.5 hidden">
+            <div class="p-3 bg-slate-950/90 rounded-lg border border-slate-800/90 space-y-1.5">
+              <div class="flex items-center justify-between text-[11px] text-slate-400">
+                <span>实时效果预览：</span>
+                <span id="previewHighlightTag" class="text-[10px] text-amber-400 font-mono">胶囊微光</span>
+              </div>
+              <div id="highlightPreviewBox" class="p-2.5 bg-slate-900/90 rounded text-xs text-slate-200 leading-relaxed border border-slate-800/60">
+                在幽暗的祭坛中，你发现了 <strong>暗金符文短匕</strong> 与记载禁忌的 <strong>星之石板</strong>，空气中涌动着 <strong>狂乱的灵能潮汐</strong>。
+              </div>
+            </div>
+            <div class="space-y-3 text-xs">
+              <div>
+                <label class="block font-medium text-slate-300 mb-1.5">快捷色盘</label>
+                <div class="grid grid-cols-3 gap-2" id="presetColorGrid"></div>
+              </div>
+              <div>
+                <label class="block font-medium text-slate-300 mb-1">自定义 Hex 色值</label>
+                <div class="flex items-center gap-2">
+                  <input type="color" id="customColorPicker" value="#fbbf24" class="w-8 h-8 rounded border border-slate-700 bg-slate-950 cursor-pointer p-0.5 shrink-0">
+                  <input type="text" id="customColorHexInput" value="#fbbf24" class="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-slate-200 font-mono text-xs uppercase">
+                </div>
+              </div>
+              <div>
+                <label class="block font-medium text-slate-300 mb-1.5">高亮形态风格</label>
+                <div class="grid grid-cols-3 gap-2" id="styleModeOptions">
+                  <button type="button" data-style="tag" class="style-mode-btn px-2 py-1.5 rounded-lg border text-xs font-medium text-center transition border-purple-500 bg-purple-950/40 text-purple-200">胶囊微光</button>
+                  <button type="button" data-style="marker" class="style-mode-btn px-2 py-1.5 rounded-lg border text-xs font-medium text-center transition border-slate-800 bg-slate-950 text-slate-400 hover:text-slate-200">荧光记号</button>
+                  <button type="button" data-style="neon" class="style-mode-btn px-2 py-1.5 rounded-lg border text-xs font-medium text-center transition border-slate-800 bg-slate-950 text-slate-400 hover:text-slate-200">霓虹发光</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 中文释义与提示遮罩开关 -->
+        <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-950/40">
+          <button type="button" class="accordion-trigger w-full px-3.5 py-2.5 text-left flex items-center justify-between hover:bg-slate-800/40 transition" data-target="accordionPrivacyPanel">
+            <div class="flex items-center gap-2 text-xs font-semibold text-slate-200">
+              <span>🕶️</span>
+              <span>中文释义与提示遮罩 (Hint Blur)</span>
+              <span id="privacyStatusSummary" class="text-[11px] font-normal px-2 py-0.5 rounded bg-slate-800 text-slate-300 ml-1">关闭</span>
+            </div>
+            <svg class="accordion-arrow w-4 h-4 text-slate-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+          </button>
+          <div id="accordionPrivacyPanel" class="p-3.5 border-t border-slate-800/80 space-y-2.5 hidden text-xs">
+            <label class="flex items-center justify-between cursor-pointer p-2 rounded-lg bg-slate-900/60 border border-slate-800/60 hover:bg-slate-800/40">
+              <div>
+                <div class="font-medium text-slate-200">开启中文翻译/提示毛玻璃模糊遮罩</div>
+                <div class="text-[10px] text-slate-500 mt-0.5">开启后对标记的中文翻译或表达提示进行模糊处理，锻炼纯英盲读理解，鼠标悬停时才清晰显现。</div>
+              </div>
+              <input type="checkbox" id="settingPrivacyShield" class="accent-purple-600 rounded w-4 h-4">
+            </label>
+          </div>
+        </div>
+
+        <!-- 音效控制 -->
+        <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-950/40">
+          <button type="button" class="accordion-trigger w-full px-3.5 py-2.5 text-left flex items-center justify-between hover:bg-slate-800/40 transition" data-target="accordionSoundPanel">
+            <div class="flex items-center gap-2 text-xs font-semibold text-slate-200">
+              <span>🔔</span>
+              <span>音效与反馈控制</span>
+            </div>
+            <svg class="accordion-arrow w-4 h-4 text-slate-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+          </button>
+          <div id="accordionSoundPanel" class="p-3.5 border-t border-slate-800/80 space-y-2.5 hidden text-xs">
+            <label class="flex items-center justify-between cursor-pointer p-1.5 rounded hover:bg-slate-800/30">
+              <span class="text-slate-300">摇骰物理滚动音效</span>
+              <input type="checkbox" id="settingDiceSound" checked class="accent-purple-600 rounded">
+            </label>
+            <label class="flex items-center justify-between cursor-pointer p-1.5 rounded hover:bg-slate-800/30">
+              <span class="text-slate-300">回合推演完成提示音</span>
+              <input type="checkbox" id="settingTurnSound" checked class="accent-purple-600 rounded">
+            </label>
+          </div>
+        </div>
+
+        <!-- 上下文与长线记忆 -->
+        <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-950/40">
+          <button type="button" class="accordion-trigger w-full px-3.5 py-2.5 text-left flex items-center justify-between hover:bg-slate-800/40 transition" data-target="accordionContextPanel">
+            <div class="flex items-center gap-2 text-xs font-semibold text-slate-200">
+              <span>🧠</span>
+              <span>上下文与长线记忆</span>
+              <span id="contextUsageSummary" class="text-[11px] font-normal px-2 py-0.5 rounded bg-slate-800 text-slate-300 ml-1">—</span>
+            </div>
+            <svg class="accordion-arrow w-4 h-4 text-slate-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+          </button>
+          <div id="accordionContextPanel" class="p-3.5 border-t border-slate-800/80 space-y-3 hidden text-xs">
+            <p class="text-[11px] text-slate-400 leading-relaxed">
+              为避免长团时上下文溢出与费用膨胀，只会把最近若干回合完整发给模型；更早的剧情会被自动压缩成「前情提要」。
+            </p>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-slate-300 text-[11px] mb-0.5">完整发送的最近回合数</label>
+                <input type="number" id="cfgRecentTurnsInput" min="2" max="60" value="12" class="w-full bg-slate-950 border border-slate-800 rounded px-2.5 py-1 text-slate-200 text-xs font-mono">
+              </div>
+              <div>
+                <label class="block text-slate-300 text-[11px] mb-0.5">累积多少回合触发压缩</label>
+                <input type="number" id="cfgSummaryTriggerInput" min="2" max="40" value="8" class="w-full bg-slate-950 border border-slate-800 rounded px-2.5 py-1 text-slate-200 text-xs font-mono">
+              </div>
+            </div>
+            <label class="flex items-center justify-between cursor-pointer p-2 rounded-lg bg-slate-900/60 border border-slate-800/60 hover:bg-slate-800/40">
+              <div>
+                <div class="font-medium text-slate-200">自动压缩早期剧情</div>
+                <div class="text-[10px] text-slate-500 mt-0.5">关闭后仅做滑动窗口裁剪，早期剧情将完全不被模型记住。</div>
+              </div>
+              <input type="checkbox" id="settingAutoSummary" checked class="accent-purple-600 rounded w-4 h-4">
+            </label>
+            <div>
+              <label class="block text-slate-300 text-[11px] mb-1">前情提要（可手动编辑）</label>
+              <textarea id="contextSummaryTextarea" rows="5" placeholder="尚未生成。跑够足够回合后会自动出现……" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-slate-200 text-[11px] leading-relaxed resize-y"></textarea>
+            </div>
+            <div class="flex gap-2">
+              <button type="button" id="saveContextConfigBtn" class="flex-1 py-1.5 bg-purple-600 hover:bg-purple-500 text-white rounded font-medium transition">保存上下文设置</button>
+              <button type="button" id="clearContextSummaryBtn" class="px-3 py-1.5 bg-red-950/40 hover:bg-red-900/60 text-red-300 rounded border border-red-800/40 transition">清空提要</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="pt-3 flex justify-end gap-2 border-t border-slate-800">
+        <button id="cancelSettingsModalBtn" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs transition">
+          取消
+        </button>
+        <button id="saveSettingsConfigBtn" class="px-5 py-1.5 bg-purple-600 hover:bg-purple-500 text-white font-medium rounded-lg text-xs transition shadow-md">
+          保存全部设置
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 模态框：属性上限设定 -->
+  <div id="attributeCapModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-2xl shadow-2xl p-5 space-y-4 transition-all">
+      <h3 class="text-sm font-bold text-slate-100">⚙️ 属性成长上限设定</h3>
+      <input type="number" id="attributeCapInput" min="5" max="999" value="20" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-slate-100 font-mono text-sm">
+      <div class="flex justify-end gap-2 pt-2 border-t border-slate-800">
+        <button id="cancelCapModalBtn" class="px-3 py-1.5 bg-slate-800 text-slate-300 rounded text-xs">取消</button>
+        <button id="saveCapModalBtn" class="px-4 py-1.5 bg-purple-600 text-white rounded text-xs font-semibold">确认应用</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 确认弹窗：重置与骰子 -->
+  <div id="resetConfirmModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-2xl shadow-2xl p-5 space-y-4 text-center">
+      <div class="w-12 h-12 rounded-full bg-red-950/60 border border-red-800/60 flex items-center justify-center mx-auto text-red-400 text-xl">⚠</div>
+      <h3 class="text-sm font-bold text-slate-100">重置当前对局？</h3>
+      <p class="text-xs text-slate-400">将清空本局推演历史与角色数值，但保留世界观设定与 API Key。</p>
+      <div class="flex justify-center gap-2 pt-2">
+        <button id="cancelResetBtn" class="px-4 py-1.5 bg-slate-800 text-slate-300 rounded-lg text-xs">取消</button>
+        <button id="confirmResetBtn" class="px-4 py-1.5 bg-red-600 text-white rounded-lg text-xs font-semibold">确认重置</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="diceConfirmModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-2xl shadow-2xl p-5 space-y-4 text-center">
+      <div class="w-12 h-12 rounded-full bg-amber-950/60 border border-amber-800/60 flex items-center justify-center mx-auto text-amber-400 text-xl">🎲</div>
+      <h3 class="text-sm font-bold text-slate-100">确认清空现有输入并投骰？</h3>
+      <p class="text-xs text-slate-400">当前输入框已有文本。投骰将清空现有文本并重新填入新的检定结果。</p>
+      <div class="flex justify-center gap-2 pt-2">
+        <button id="cancelDiceBtn" class="px-4 py-1.5 bg-slate-800 text-slate-300 rounded-lg text-xs">取消</button>
+        <button id="confirmDiceBtn" class="px-4 py-1.5 bg-purple-600 text-white rounded-lg text-xs font-semibold">确认清空</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="manualHudModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl shadow-2xl p-5 space-y-4">
+      <h3 class="text-sm font-bold text-slate-100">🛠️ 编辑 HUD 与角色数据 (JSON)</h3>
+      <textarea id="rawHudJsonTextarea" rows="12" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-emerald-400 font-mono text-xs leading-relaxed"></textarea>
+      <div class="flex justify-end gap-2">
+        <button id="cancelManualHudBtn" class="px-3 py-1.5 bg-slate-800 text-slate-300 rounded text-xs">取消</button>
+        <button id="saveManualHudBtn" class="px-4 py-1.5 bg-emerald-600 text-white rounded text-xs font-semibold">应用变更</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 剧情高亮词汇深度联动浮窗 (点击文中任意加粗/高亮词触发) -->
+  <div id="highlightWordPopover" class="hidden fixed z-50 w-80 rounded-xl bg-slate-900 border-2 border-slate-800 shadow-2xl p-3.5 space-y-2.5 text-xs">
+    <div class="flex items-start justify-between gap-2 border-b border-slate-800 pb-2">
+      <div class="min-w-0 flex-1">
+        <div class="flex items-center gap-1.5 flex-wrap">
+          <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800" id="hlPopoverStatusBadge">✦ 剧情高亮</span>
+          <span class="font-bold text-sm text-slate-100 break-words" id="hlPopoverTerm">expression</span>
+        </div>
+        <div class="text-[10px] text-slate-400 italic mt-1 line-clamp-2" id="hlPopoverContext"></div>
+      </div>
+      <button type="button" id="closeHlPopoverBtn" class="text-slate-400 hover:text-slate-200 px-1 text-xs">✕</button>
+    </div>
+
+    <div class="grid grid-cols-2 gap-1.5">
+      <button type="button" data-action="hl-pop-speak" class="px-2.5 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-[11px] font-medium flex items-center justify-center gap-1 transition">
+        <span>🔊</span><span>朗读词与原句</span>
+      </button>
+      <button type="button" data-action="hl-pop-insert" class="px-2.5 py-1.5 rounded bg-purple-950/80 hover:bg-purple-900 text-purple-200 border border-purple-800/70 text-[11px] font-medium flex items-center justify-center gap-1 transition">
+        <span>✍️</span><span>填入造句实战</span>
+      </button>
+      <button type="button" data-action="hl-pop-collect" id="hlPopoverCollectBtn" class="px-2.5 py-1.5 rounded bg-emerald-950/80 hover:bg-emerald-900 text-emerald-200 border border-emerald-800/70 text-[11px] font-medium flex items-center justify-center gap-1 transition">
+        <span>📌</span><span id="hlPopoverCollectText">收入技能词库</span>
+      </button>
+      <button type="button" data-action="hl-pop-pin" class="px-2.5 py-1.5 rounded bg-amber-950/80 hover:bg-amber-900 text-amber-200 border border-amber-800/70 text-[11px] font-medium flex items-center justify-center gap-1 transition">
+        <span>🧠</span><span>钉入记忆锚点</span>
+      </button>
+    </div>
+
+    <button type="button" data-action="hl-pop-explain" id="hlPopoverExplainBtn" class="w-full py-1.5 rounded bg-slate-950 hover:bg-slate-800 text-slate-200 border border-slate-800 text-[11px] font-semibold flex items-center justify-center gap-1.5 transition">
+      <span>🎓</span><span id="hlPopoverExplainBtnText">AI 语境释义与地道造句示范</span>
+    </button>
+
+    <div id="hlPopoverExplainBox" class="hidden p-2.5 rounded bg-slate-950 border border-slate-800 space-y-1.5 text-[11px] text-slate-200 max-h-44 overflow-y-auto leading-relaxed"></div>
+  </div>
+
+  <div id="toastContainer" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- 模态框：世界蓝图 -->
+  <div id="schemaModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 w-full max-w-2xl rounded-2xl shadow-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto overscroll-contain">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-sm font-bold text-slate-100 flex items-center gap-2">
+          <span>🧩</span><span>世界蓝图</span>
+          <span id="schemaCurrentBadge" class="text-[10px] font-normal px-2 py-0.5 rounded bg-slate-800 text-slate-300">通用奇幻</span>
+        </h3>
+        <button id="closeSchemaModalBtn" class="text-slate-400 hover:text-slate-200">✕</button>
+      </div>
+
+      <p class="text-xs text-slate-400 leading-relaxed">
+        蓝图决定右栏<b class="text-slate-300">有哪些页签、叫什么名字、每个面板里有哪些字段</b>。
+        默认蓝图与原有界面完全一致，不改动也能正常游玩。
+      </p>
+
+      <div>
+        <div class="text-[11px] font-semibold text-slate-300 mb-1.5">① 选择世界类型预设</div>
+        <div id="presetGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-2"></div>
+      </div>
+
+      <div class="p-3 rounded-xl bg-slate-950/80 border border-slate-800 space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-[11px] font-semibold text-slate-300">② 用 AI 依据当前「世界设定」微调骨架</span>
+          <span id="schemaAiStatus" class="text-[10px] text-slate-500"></span>
+        </div>
+        <button type="button" id="aiGenerateSchemaBtn" class="w-full py-1.5 bg-purple-600 hover:bg-purple-500 text-white rounded text-xs font-medium transition">
+          ✨ 依据世界观生成专属蓝图
+        </button>
+        <p class="text-[10px] text-slate-500 leading-relaxed">
+          AI 只能改名称与字段定义，<b class="text-slate-400">结构（页签/面板 id）由骨架锁定</b>，因此不会把界面改坏。
+        </p>
+      </div>
+
+      <div>
+        <div class="flex items-center justify-between mb-1.5">
+          <span class="text-[11px] font-semibold text-slate-300">③ 调整结构（增删栏位 / 改名 / 排序）</span>
+          <button type="button" id="addTabBtn" class="text-[11px] text-emerald-300 hover:text-emerald-200 underline">＋ 添加页签</button>
+        </div>
+        <div id="schemaTree" class="space-y-2 max-h-64 overflow-y-auto overscroll-contain pr-1"></div>
+      </div>
+
+      <div>
+        <div class="flex items-center justify-between mb-1.5">
+          <span class="text-[11px] font-semibold text-slate-300">④ 调整角色卡字段版式</span>
+          <span class="text-[10px] text-slate-500">决定每个字段摆在角色卡哪个位置</span>
+        </div>
+        <div id="profileTree" class="space-y-2 max-h-64 overflow-y-auto overscroll-contain pr-1"></div>
+      </div>
+
+      <div>
+        <div class="flex items-center justify-between mb-1.5">
+          <span class="text-[11px] font-semibold text-slate-300">⑤ 调整角色创建表单</span>
+          <span class="text-[10px] text-slate-500">字段 / 投骰 / 初始数值公式</span>
+        </div>
+        <div id="creationTree" class="space-y-2 max-h-64 overflow-y-auto overscroll-contain pr-1"></div>
+      </div>
+
+      <div>
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-[11px] font-semibold text-slate-300">⑥ 直接编辑蓝图 JSON</span>
+          <button type="button" id="resetSchemaBtn" class="text-[11px] text-rose-300 hover:text-rose-200 underline">恢复默认蓝图</button>
+        </div>
+        <textarea id="schemaJsonTextarea" rows="10" spellcheck="false" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-emerald-300/90 font-mono text-[11px] leading-relaxed"></textarea>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2 border-t border-slate-800">
+        <button id="cancelSchemaBtn" class="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-xs">取消</button>
+        <button id="applySchemaBtn" class="px-4 py-1.5 bg-purple-600 hover:bg-purple-500 text-white rounded text-xs font-semibold">应用蓝图</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

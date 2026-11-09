@@ -1,0 +1,37 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+src-tauri/target
+src-tauri/gen
+*.local
+.env
+.env.*
+*.key
+*.pem
+secrets/
+diag/
+trpg_backup_*/
+
+# 快照工具的"上一次运行结果"：每次跑 compare 都会带上新的 capturedAt，
+# 留在版本控制里会让工作区永远不干净。基线（hud-baseline.json）才是有意义的那份。
+tests/tools/hud-snapshot.json
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

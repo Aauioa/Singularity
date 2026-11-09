@@ -1,0 +1,304 @@
+{
+  "format": "singularity-world-pack",
+  "version": 2,
+  "worldName": "常春藤校园研讨与社团破冰",
+  "desc": "北美名校 Seminar 研讨课发言、草坪社团招新与教授 Office Hours 英语口语实战剧场",
+  "world": "【沉浸式口语剧场：常春藤秋季学期 · 学术研讨与校园社交 (Ivy League Campus Life)】\n\n一、场景定位与跨文化背景（Story World Setting）\n金秋九月，阳光穿过古老的红砖钟楼与银杏树叶，洒在北美顶尖学府的中央草坪（Memorial Glade）上。下课钟声敲响，来自世界各地的学生抱着笔记本电脑穿梭在研讨室、学生中心咖啡吧与草坪社团招新摊位之间。\n\n你作为一名刚开启本学期课程的国际交换生 / 访问研究生，正面临北美校园生活中最核心的三大英语口语挑战：在节奏飞快的 Seminar 研讨课上抢过话筒清晰表达观点、在热闹的草坪社团招新派对（Club Mixer）中与本土同学自然破冰闲聊、以及在教授的办公时间（Office Hours）一对一探讨研究课题与助研（RA）机会。\n\n二、核心常驻语伴与人物（NPC Personas）\n1. **Chloe Miller**（大二传媒系主修 & 创客社团会长 / Sophomore Media Major & Club President）\n   · 性格与说话风格：阳光外向、语速轻快，大量使用地道北美校园俚语与日常习语（casual, energetic & idiomatic），非常乐意带新同学融入社交圈。\n   · 英语口语对练定位：校园破冰寒暄（Campus Small Talk）、社团活动交流、周末聚会邀约、地道美式俚语运用。\n   · 常用地道表达：\"Have you settled into your dorm yet?\" / \"I've been totally swamped with readings this week!\" / \"We really hit it off—you should totally come to our mixer tonight!\"\n\n2. **Liam O'Connor**（计算机与认知科学博士助教 / PhD Teaching Assistant）\n   · 性格与说话风格：思维敏锐、风趣健谈（witty & analytical），主持每周五的 Seminar 小组讨论，喜欢用苏格拉底式追问激发同学把观点说深说透。\n   · 英语口语对练定位：课堂讨论插话（Jumping in）、礼貌反驳与辩证思考（Playing devil's advocate）、逻辑展开与举例论证。\n   · 常用地道表达：\"That's an intriguing angle—could you unpack that a bit?\" / \"If I may play devil's advocate here...\" / \"How does that tie back to our main hypothesis?\"\n\n3. **Prof. Arthur Pendelton**（认知科学与人工智能伦理终身教授 / Tenured Professor）\n   · 性格与说话风格：温文尔雅但学术标准严谨（warm yet rigorous），欣赏有独立思考、表达简洁有条理的学生，最怕学生支支吾吾不敢开口。\n   · 英语口语对练定位：学术口语汇报（Academic Pitching）、Office Hours 课题请教、争取实验室研究机会。\n   · 常用地道表达：\"What's the core question you're trying to shed light on?\" / \"That's a compelling argument, provided you can back it up.\" / \"Let's touch base again next Tuesday.\"\n\n三、目标词库（Target Vocabulary）\n鼓励学习者在本校园世界的互动中主动运用以下高频地道表达（当玩家准确使用时，系统自动将其移入「已掌握词汇」）：\n- **build on that**（在此观点基础上补充延伸）\n- **play devil's advocate**（故意唱反调 / 从反面进行辩证推演）\n- **swamped with**（被课业或事务忙得不可开交）\n- **shed light on**（阐明 / 揭示某个复杂问题）\n- **hit it off**（一见如故 / 聊得非常投机）\n- **compelling**（令人信服的 / 引人入胜的）\n- **wrap my head around**（弄懂、理解某个复杂的概念）\n- **touch base**（简短碰头沟通 / 跟进近况）\n\n四、三条递进式情境主线（Scenario Missions）\n· **Stage 1 · Campus Quad Club Mixer（中央草坪社团招新破冰）**：在社团招新摊位前与学姐 Chloe 自然搭话，聊聊开学第一周的适应情况并用校园地道口语完成破冰。\n· **Stage 2 · The Seminar Debate（研讨课思想交锋）**：走进 12 人圆桌研讨室，在助教 Liam 的引导下围绕「AI 是否会重塑人类创造力」主动抢话发言、补充他人观点或礼貌反驳。\n· **Stage 3 · Professor's Office Hours（教授办公室深度面谈）**：敲开 Pendelton 教授办公室的门，在 10 分钟内清晰阐述你的期末研究构想，赢得教授认可并加入他的课题组。",
+  "character": "【角色卡—Lin】\n学习者：Lin / 背景：国际交换生 / 学术方向：Cognitive Science & AI / 英语等级：CEFR B2 (校园与学术进阶)\n偏好口音：美式通用 (General American) / 练习语速：1.0x 自然常速\n外貌与随身特征：背着双肩包、手里拿着冰美式与《AI & Human Mind》研讨课讲义，怀着期待又略带紧张的心情走进校园中央草坪。\n属性：流利度：14 / 词汇量：14 / 语法准确：15 / 语用得体：14 / 学术思辨：15\n流利度 (Fluency)：76 / 表达自信 (Confidence)：74 / 语用得体度 (Pragmatics)：78",
+  "rules": "【校园篇双核驱动法则：沉浸式校园英语叙事 + 按需口语教练】\n\n1. **沉浸式北美校园英语叙事**：\n   · 剧中同学、助教与教授的所有台词必须使用真实、鲜活的美式英语（区分草坪社交的轻松俚语与研讨课/办公室的得体学术口语）。\n   · 场景过渡与神态描写自然流畅，并在正文中用 **Markdown 加粗** 标记 1~2 个值得顺便习得的校园或学术地道短语（Collocations / Idioms）。\n   · 绝不替玩家做决定，不在正文末尾列出机械的 A/B/C 选项；每次把对话话筒自然交给玩家。\n\n2. **AI 建议按需触发（严禁在正文中直接给出建议）**：\n   · 正常对话回合中，只输出纯粹的校园场景与 NPC 英语对话，不要在正文中直接给出 AI 导师建议、语法纠错或下一轮回复选项，把独立开口思考的空间完整留给玩家（由玩家自行决定是否点击界面上的「💡 获取 AI 导师建议」按钮）。\n   · 仅当玩家消息以 [AI Tutor] / [Ask AI Tutor] / [AI Summary] 开头主动求助时，才在回复中提供针对性的地道润色（Recast）与分级英文回应示范。\n\n3. **词汇迷宫动态激励**：\n   · 当玩家在英文回复中主动且恰当地使用了「待激活词汇（unknown）」中的短语时，在末尾数据块中将该词移入「已掌握词汇（known）」，并为流利度与表达自信状态条 +3~+5。",
+  "memoryPins": "- 学习者当前等级为 CEFR B2，目标是攻克北美大学校园社交（Small Talk）与研讨课学术发言（Seminar & Office Hours）。\n- 当前身处校园中央草坪（Memorial Glade）的社团招新现场，稍后将参加 Liam 的研讨课与 Pendelton 教授的 Office Hours。\n- 待实战激活的目标词汇：build on that, play devil's advocate, swamped with, shed light on, hit it off, compelling, wrap my head around, touch base。",
+  "lore": {
+    "world": "【沉浸式口语剧场：常春藤秋季学期 · 学术研讨与校园社交 (Ivy League Campus Life)】\n\n一、场景定位与跨文化背景（Story World Setting）\n金秋九月，阳光穿过古老的红砖钟楼与银杏树叶，洒在北美顶尖学府的中央草坪（Memorial Glade）上。下课钟声敲响，来自世界各地的学生抱着笔记本电脑穿梭在研讨室、学生中心咖啡吧与草坪社团招新摊位之间。\n\n你作为一名刚开启本学期课程的国际交换生 / 访问研究生，正面临北美校园生活中最核心的三大英语口语挑战：在节奏飞快的 Seminar 研讨课上抢过话筒清晰表达观点、在热闹的草坪社团招新派对（Club Mixer）中与本土同学自然破冰闲聊、以及在教授的办公时间（Office Hours）一对一探讨研究课题与助研（RA）机会。\n\n二、核心常驻语伴与人物（NPC Personas）\n1. **Chloe Miller**（大二传媒系主修 & 创客社团会长 / Sophomore Media Major & Club President）\n   · 性格与说话风格：阳光外向、语速轻快，大量使用地道北美校园俚语与日常习语（casual, energetic & idiomatic），非常乐意带新同学融入社交圈。\n   · 英语口语对练定位：校园破冰寒暄（Campus Small Talk）、社团活动交流、周末聚会邀约、地道美式俚语运用。\n   · 常用地道表达：\"Have you settled into your dorm yet?\" / \"I've been totally swamped with readings this week!\" / \"We really hit it off—you should totally come to our mixer tonight!\"\n\n2. **Liam O'Connor**（计算机与认知科学博士助教 / PhD Teaching Assistant）\n   · 性格与说话风格：思维敏锐、风趣健谈（witty & analytical），主持每周五的 Seminar 小组讨论，喜欢用苏格拉底式追问激发同学把观点说深说透。\n   · 英语口语对练定位：课堂讨论插话（Jumping in）、礼貌反驳与辩证思考（Playing devil's advocate）、逻辑展开与举例论证。\n   · 常用地道表达：\"That's an intriguing angle—could you unpack that a bit?\" / \"If I may play devil's advocate here...\" / \"How does that tie back to our main hypothesis?\"\n\n3. **Prof. Arthur Pendelton**（认知科学与人工智能伦理终身教授 / Tenured Professor）\n   · 性格与说话风格：温文尔雅但学术标准严谨（warm yet rigorous），欣赏有独立思考、表达简洁有条理的学生，最怕学生支支吾吾不敢开口。\n   · 英语口语对练定位：学术口语汇报（Academic Pitching）、Office Hours 课题请教、争取实验室研究机会。\n   · 常用地道表达：\"What's the core question you're trying to shed light on?\" / \"That's a compelling argument, provided you can back it up.\" / \"Let's touch base again next Tuesday.\"\n\n三、目标词库（Target Vocabulary）\n鼓励学习者在本校园世界的互动中主动运用以下高频地道表达（当玩家准确使用时，系统自动将其移入「已掌握词汇」）：\n- **build on that**（在此观点基础上补充延伸）\n- **play devil's advocate**（故意唱反调 / 从反面进行辩证推演）\n- **swamped with**（被课业或事务忙得不可开交）\n- **shed light on**（阐明 / 揭示某个复杂问题）\n- **hit it off**（一见如故 / 聊得非常投机）\n- **compelling**（令人信服的 / 引人入胜的）\n- **wrap my head around**（弄懂、理解某个复杂的概念）\n- **touch base**（简短碰头沟通 / 跟进近况）\n\n四、三条递进式情境主线（Scenario Missions）\n· **Stage 1 · Campus Quad Club Mixer（中央草坪社团招新破冰）**：在社团招新摊位前与学姐 Chloe 自然搭话，聊聊开学第一周的适应情况并用校园地道口语完成破冰。\n· **Stage 2 · The Seminar Debate（研讨课思想交锋）**：走进 12 人圆桌研讨室，在助教 Liam 的引导下围绕「AI 是否会重塑人类创造力」主动抢话发言、补充他人观点或礼貌反驳。\n· **Stage 3 · Professor's Office Hours（教授办公室深度面谈）**：敲开 Pendelton 教授办公室的门，在 10 分钟内清晰阐述你的期末研究构想，赢得教授认可并加入他的课题组。",
+    "character": "【角色卡—Lin】\n学习者：Lin / 背景：国际交换生 / 学术方向：Cognitive Science & AI / 英语等级：CEFR B2 (校园与学术进阶)\n偏好口音：美式通用 (General American) / 练习语速：1.0x 自然常速\n外貌与随身特征：背着双肩包、手里拿着冰美式与《AI & Human Mind》研讨课讲义，怀着期待又略带紧张的心情走进校园中央草坪。\n属性：流利度：14 / 词汇量：14 / 语法准确：15 / 语用得体：14 / 学术思辨：15\n流利度 (Fluency)：76 / 表达自信 (Confidence)：74 / 语用得体度 (Pragmatics)：78",
+    "rules": "【校园篇双核驱动法则：沉浸式校园英语叙事 + 按需口语教练】\n\n1. **沉浸式北美校园英语叙事**：\n   · 剧中同学、助教与教授的所有台词必须使用真实、鲜活的美式英语（区分草坪社交的轻松俚语与研讨课/办公室的得体学术口语）。\n   · 场景过渡与神态描写自然流畅，并在正文中用 **Markdown 加粗** 标记 1~2 个值得顺便习得的校园或学术地道短语（Collocations / Idioms）。\n   · 绝不替玩家做决定，不在正文末尾列出机械的 A/B/C 选项；每次把对话话筒自然交给玩家。\n\n2. **AI 建议按需触发（严禁在正文中直接给出建议）**：\n   · 正常对话回合中，只输出纯粹的校园场景与 NPC 英语对话，不要在正文中直接给出 AI 导师建议、语法纠错或下一轮回复选项，把独立开口思考的空间完整留给玩家（由玩家自行决定是否点击界面上的「💡 获取 AI 导师建议」按钮）。\n   · 仅当玩家消息以 [AI Tutor] / [Ask AI Tutor] / [AI Summary] 开头主动求助时，才在回复中提供针对性的地道润色（Recast）与分级英文回应示范。\n\n3. **词汇迷宫动态激励**：\n   · 当玩家在英文回复中主动且恰当地使用了「待激活词汇（unknown）」中的短语时，在末尾数据块中将该词移入「已掌握词汇（known）」，并为流利度与表达自信状态条 +3~+5。",
+    "memoryPins": "- 学习者当前等级为 CEFR B2，目标是攻克北美大学校园社交（Small Talk）与研讨课学术发言（Seminar & Office Hours）。\n- 当前身处校园中央草坪（Memorial Glade）的社团招新现场，稍后将参加 Liam 的研讨课与 Pendelton 教授的 Office Hours。\n- 待实战激活的目标词汇：build on that, play devil's advocate, swamped with, shed light on, hit it off, compelling, wrap my head around, touch base。"
+  },
+  "wizardConfig": {
+    "races": ["国际交换本科生", "访问硕士研究生", "跨学科博士新生", "奖学金访问学者", "校园创客社团成员"],
+    "classes": ["Cognitive Science & AI", "Computer Science", "Media & Communication", "Economics & Business", "Digital Humanities"],
+    "identities": ["CEFR B1 (日常校园交流)", "CEFR B2 (研讨课流利发言)", "CEFR C1 (学术辩论与发表)", "Office Hours 挑战者"],
+    "attributes": ["流利度", "词汇量", "语法准确", "语用得体", "学术思辨"],
+    "pointBudget": 25,
+    "maxPerStat": 8
+  },
+  "worldSchema": {
+    "version": 1,
+    "preset": "campus",
+    "name": "口语实战 · 常春藤校园篇",
+    "profileFields": [
+      { "key": "name", "label": "学习者", "slot": "title" },
+      { "key": "race", "label": "校园身份", "slot": "badge" },
+      { "key": "class", "label": "主修方向", "slot": "badge" },
+      { "key": "identity", "label": "CEFR 目标", "slot": "badge" },
+      { "key": "gender", "label": "偏好口音", "slot": "field", "emptyText": "美式通用 (General American)" },
+      { "key": "age", "label": "目标语速", "slot": "field", "emptyText": "1.0x 自然常速" },
+      { "key": "appearance", "label": "学期口语目标与随身状态", "slot": "appearance" }
+    ],
+    "creation": {
+      "rows": [
+        {
+          "cols": "grid-cols-2 sm:grid-cols-4",
+          "fields": [
+            { "key": "name", "label": "英文名 / 昵称", "cardLabel": "学习者", "type": "text", "span": 2, "required": true, "placeholder": "例如：Lin / Leo / Sophia" },
+            { "key": "gender", "label": "偏好口音", "type": "select", "options": ["美式英语", "英式英语", "国际化通用"] },
+            { "key": "age", "label": "年级/学分", "type": "number", "value": 20 }
+          ]
+        },
+        {
+          "cols": "grid-cols-1 sm:grid-cols-3",
+          "fields": [
+            { "key": "race", "label": "校园身份定位", "type": "chips", "source": "races" },
+            { "key": "class", "label": "主修学术方向", "type": "chips", "source": "classes" },
+            { "key": "identity", "label": "CEFR 等级与目标", "type": "chips", "source": "identities" }
+          ]
+        },
+        {
+          "cols": "grid-cols-1",
+          "fields": [
+            { "key": "appearance", "label": "本学期口语突破重点", "type": "textarea", "rows": 2, "placeholder": "例如：希望在 Seminar 讨论课上自信插话发言，掌握北美同学常用的地道校园俚语..." }
+          ]
+        }
+      ],
+      "dice": {
+        "key": "课堂表现",
+        "label": "课堂临场灵感投骰 (D6)",
+        "sides": 6,
+        "base": 12,
+        "map": { "1": 0, "2": 1, "3": 2, "4": 3, "5": 4, "6": 5 }
+      },
+      "derived": [
+        { "label": "流利度 (Fluency)", "cardLabel": "Fluency", "tone": "emerald", "formula": "45 + 流利度 * 6" },
+        { "label": "表达自信 (Confidence)", "cardLabel": "Confidence", "tone": "cyan", "formula": "45 + 语用得体 * 6" },
+        { "label": "语用得体度 (Pragmatics)", "cardLabel": "Pragmatics", "tone": "amber", "formula": "45 + 学术思辨 * 6" }
+      ]
+    },
+    "tabs": [
+      {
+        "id": "stats",
+        "label": "口语档案",
+        "panelClass": "space-y-4",
+        "sections": [
+          { "id": "profile", "type": "profile", "label": "学生口语档案" },
+          { "id": "location", "type": "location", "label": "当前校园地点" },
+          {
+            "id": "vitals",
+            "type": "bars",
+            "label": "实时口语状态 (Speaking Vitals)",
+            "source": "bars",
+            "fields": [
+              { "key": "流利度 (Fluency)", "label": "流利度 (Fluency)", "max": 100, "tone": "emerald" },
+              { "key": "表达自信 (Confidence)", "label": "表达自信 (Confidence)", "max": 100, "tone": "cyan" },
+              { "key": "语用得体度 (Pragmatics)", "label": "语用得体度 (Pragmatics)", "max": 100, "tone": "amber" }
+            ]
+          },
+          { "id": "attrs", "type": "stats", "label": "五维学术与社交口语雷达", "source": "attributes", "radar": true },
+          {
+            "id": "mastery",
+            "type": "tiers",
+            "label": "校园场景熟练度 (Campus Mastery)",
+            "source": "weapon_mastery",
+            "ladder": ["A2 旁听", "B1 破冰", "B2 积极发言", "C1 控场辩论", "C2 学术达人", "校园风云人物"],
+            "emptyText": "参与课堂或社交对话后自动评估"
+          },
+          { "id": "states", "type": "tags", "label": "当前校园状态与增益", "source": "status_effects", "emptyText": "状态平稳" }
+        ]
+      },
+      {
+        "id": "npc",
+        "label": "同窗导师",
+        "panelClass": "space-y-3",
+        "sections": [
+          {
+            "id": "codex",
+            "type": "entities",
+            "label": "Tutor Matching · 同学、助教与教授关系",
+            "source": "npc_codex",
+            "badgeKey": "love_type",
+            "infoFields": [
+              { "key": "race", "label": "校园身份" },
+              { "key": "personality", "label": "沟通风格" }
+            ],
+            "dimensions": [
+              { "key": "affection", "deltaKey": "affDelta", "label": "友好度 (Rapport)", "max": 100, "tone": "rose" },
+              { "key": "trust", "deltaKey": "trustDelta", "label": "学术认可 (Respect)", "max": 100, "tone": "cyan" },
+              { "key": "depth", "deltaKey": "depthDelta", "label": "交流深度 (Depth)", "max": 100, "tone": "amber" }
+            ],
+            "emptyText": "当前尚未结识校园语伴。"
+          }
+        ]
+      },
+      {
+        "id": "bag",
+        "label": "书包讲义",
+        "panelClass": "space-y-2.5",
+        "sections": [
+          { "id": "items", "type": "list", "label": "随身课业资料与校园物品", "source": "inventory", "layout": "grid" }
+        ]
+      },
+      {
+        "id": "spells",
+        "label": "词汇迷宫",
+        "panelClass": "space-y-3",
+        "sections": [
+          {
+            "id": "spells",
+            "type": "list",
+            "label": "研讨课与校园社交句型卡 (Speaking Scaffolds)",
+            "source": "spells",
+            "layout": "cards",
+            "costKey": "mp",
+            "costLabel": "难度",
+            "tagKey": "ring",
+            "tagFallback": "校园高频",
+            "action": {
+              "label": "套用开口",
+              "template": "[Use Pattern: {name}] 我想用这个校园地道句型开口回应："
+            },
+            "emptyText": "暂无句型卡"
+          },
+          { "id": "skills", "type": "skills", "label": "Word Maze · 校园与学术词汇迷宫", "source": "skills", "emptyText": "暂无词汇记录" }
+        ]
+      }
+    ]
+  },
+  "hudState": {
+    "character_profile": {
+      "name": "Lin",
+      "gender": "美式通用 (General American)",
+      "age": "1.0x 自然常速",
+      "race": "国际交换本科生",
+      "class": "Cognitive Science & AI",
+      "identity": "CEFR B2 (研讨课流利发言)",
+      "appearance": "背着装有 Seminar 论文讲义的双肩包走在秋季阳光下的中央草坪，准备先在社团招新摊位破冰，再去参加研讨课与教授 Office Hours。"
+    },
+    "location": "Memorial Glade 中央草坪 · 社团招新现场",
+    "time": "周五下午 13:45 · 研讨课开始前 30 分钟",
+    "bars": [
+      { "label": "流利度 (Fluency)", "current": 76, "max": 100, "color": "emerald" },
+      { "label": "表达自信 (Confidence)", "current": 74, "max": 100, "color": "cyan" },
+      { "label": "语用得体度 (Pragmatics)", "current": 78, "max": 100, "color": "amber" }
+    ],
+    "attribute_cap": 20,
+    "attributes": {
+      "流利度": { "current": 14, "max": 20 },
+      "词汇量": { "current": 14, "max": 20 },
+      "语法准确": { "current": 15, "max": 20 },
+      "语用得体": { "current": 14, "max": 20 },
+      "学术思辨": { "current": 15, "max": 20 }
+    },
+    "weapon_mastery": {
+      "Campus Social (社团破冰)": { "level": "B2 积极发言", "exp": 55 },
+      "Seminar Discussion (课堂交锋)": { "level": "B1 破冰", "exp": 45 },
+      "Office Hours (教授面谈)": { "level": "B1 破冰", "exp": 40 }
+    },
+    "npc_codex": [
+      {
+        "name": "Chloe Miller",
+        "race": "Sophomore & Club President",
+        "personality": "Energetic, friendly, uses campus slang",
+        "love_type": "社团学姐 (Club Peer)",
+        "affection": 65,
+        "affDelta": 0,
+        "trust": 60,
+        "trustDelta": 0,
+        "depth": 35,
+        "depthDelta": 0
+      },
+      {
+        "name": "Liam O'Connor",
+        "race": "PhD Teaching Assistant",
+        "personality": "Witty, Socratic, loves critical debate",
+        "love_type": "研讨课助教 (Seminar TA)",
+        "affection": 55,
+        "affDelta": 0,
+        "trust": 55,
+        "trustDelta": 0,
+        "depth": 40,
+        "depthDelta": 0
+      },
+      {
+        "name": "Prof. Arthur Pendelton",
+        "race": "Cognitive Science Professor",
+        "personality": "Warm, rigorous, values clear hypotheses",
+        "love_type": "学术导师 (Advisor)",
+        "affection": 50,
+        "affDelta": 0,
+        "trust": 50,
+        "trustDelta": 0,
+        "depth": 30,
+        "depthDelta": 0
+      }
+    ],
+    "spells": [
+      {
+        "name": "If I could just jump in and build on...",
+        "ring": "B2 研讨抢话",
+        "mp": 1,
+        "desc": "在 Seminar 课堂自然插话并补充同学观点：\"If I could just jump in and build on what Liam said, I think...\""
+      },
+      {
+        "name": "To play devil's advocate for a second...",
+        "ring": "C1 辩证反驳",
+        "mp": 2,
+        "desc": "礼貌提出反面论点而不显得冒犯：\"I see your point, but to play devil's advocate for a second, what if...?\""
+      },
+      {
+        "name": "I've been trying to wrap my head around...",
+        "ring": "B2 学术请教",
+        "mp": 2,
+        "desc": "在 Office Hours 向教授请教难点：\"Professor, I've been trying to wrap my head around this paper's methodology.\""
+      },
+      {
+        "name": "I've been pretty swamped with..., but...",
+        "ring": "B2 校园寒暄",
+        "mp": 1,
+        "desc": "与同学拉近距离的地道日常表达：\"I've been pretty swamped with readings this week, but I'd love to check out the club mixer!\""
+      }
+    ],
+    "skills": {
+      "known": [
+        "settle in (安顿适应下来)",
+        "unpack (深入拆解分析)",
+        "hands-on (亲自动手实践的)"
+      ],
+      "unknown": [
+        "build on that (在此基础上补充)",
+        "play devil's advocate (唱反调/辩证思考)",
+        "swamped with (忙得不可开交)",
+        "shed light on (阐明/揭示)",
+        "hit it off (一见如故/聊得投机)",
+        "compelling (有说服力的)",
+        "wrap my head around (理解复杂概念)",
+        "touch base (简短碰头沟通)"
+      ]
+    },
+    "status_effects": [
+      {
+        "name": "Autumn Campus Vibe",
+        "type": "buff",
+        "desc": "沉浸在开放包容的常春藤校园氛围中，跨文化交流好奇心与表达欲提升"
+      }
+    ],
+    "inventory": [
+      {
+        "name": "《AI & Human Creativity》研讨课讲义",
+        "qty": 1,
+        "icon": "📑",
+        "desc": "空白处写满了你用英文做的批注与两个待探讨的研究问题。"
+      },
+      {
+        "name": "创客社团招新传单 & 冰美式",
+        "qty": 1,
+        "icon": "🥤",
+        "desc": "Chloe 刚递给你的社团 Mixer 邀请函，上面印着今晚披萨夜的时间地点。"
+      },
+      {
+        "name": "Office Hours 研究构想提纲",
+        "qty": 1,
+        "icon": "📝",
+        "desc": "准备在 Pendelton 教授办公室汇报的一页纸 Research Proposal。"
+      }
+    ]
+  },
+  "history": []
+}

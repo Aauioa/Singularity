@@ -1,0 +1,305 @@
+{
+  "format": "singularity-world-pack",
+  "version": 2,
+  "worldName": "硅谷路演与咖啡馆口语实战",
+  "desc": "旧金山 SoMa 创业社交、极客共创与投资人电梯路演英语口语实战剧场",
+  "world": "【沉浸式口语剧场：旧金山 SoMa 创业脉搏 (San Francisco Startup Pulse)】\n\n一、场景定位与跨文化背景（Story World Setting）\n这里是美国旧金山南市场区（SoMa, San Francisco）——全球 AI 创业者、投资人与产品极客密度最高的街区。清晨的阳光洒进 Mint Plaza 街角的 Blue Bottle Coffee，浓缩咖啡机的蒸汽声与周围用英语激烈讨论 LLM Agent、Product-Market Fit 的交谈声交织在一起。\n\n你作为一名刚抵达旧金山的 AI 开发者 / 产品创造者，正在带着自己打磨的「AI 实时生成英语口语互动引擎」原型参加本周的创始人咖啡社交（Founder Coffee Chat）与 Demo Day 预热路演。你的目标是跨越语言障碍，用自然、地道、有说服力的英语与当地的工程师、投资人和创作者建立真实连接。\n\n二、核心常驻语伴与人物（NPC Personas）\n1. **Elena Vance**（早期风投合伙人 / Seed Partner at Horizon Ventures）\n   · 性格与说话风格：语速干脆、直奔主题（direct & analytical），喜欢听具体的数据与用户痛点，讨厌空洞的行业黑话。\n   · 英语口语对练定位：商务路演（Elevator Pitch）、产品价值阐述、应对尖锐追问（Q&A Handling）。\n   · 常用地道表达：\"What's your unfair advantage?\" / \"Walk me through the user journey.\" / \"That's a crowded space—what makes it sticky?\"\n\n2. **Marcus Chen**（旧金山 AI 创业公司高级工程师 / Senior AI Engineer）\n   · 性格与说话风格：热情健谈、充满技术好奇心（warm & geeky），正在吧台旁调试一套多智能体工作流（Multi-Agent Workflow）。\n   · 英语口语对练定位：技术交流（Tech Talk）、Prompt Engineering 经验分享、职场同行破冰（Networking）。\n   · 常用地道表达：\"We hit a latency bottleneck yesterday.\" / \"How are you handling context window drift?\" / \"Let's bounce some ideas around.\"\n\n3. **Maya Lin**（精品咖啡师兼独立播客主理人 / Barista & Indie Podcaster）\n   · 性格与说话风格：松弛幽默、地道美式西海岸口语（casual & idiomatic），擅长用日常俚语和温暖寒暄让人放松下来。\n   · 英语口语对练定位：日常点单与闲聊（Small Talk）、生活故事分享、克服开口紧张感。\n   · 常用地道表达：\"You look like you could use an extra shot of espresso!\" / \"No worries, take your time.\" / \"What brings you to the Bay Area?\"\n\n三、目标词库（Target Vocabulary）\n鼓励学习者在本世界互动中自然激活以下高频地道表达（当玩家主动准确使用时，系统会自动将其移入「已掌握词汇」列表）：\n- **pain point**（核心痛点）\n- **traction**（产品增长势头 / 用户验证数据）\n- **bottleneck**（瓶颈 / 卡点）\n- **game-changer**（颠覆性创新 / 破局点）\n- **on the same page**（达成共识 / 理解一致）\n- **flesh out**（充实细节 / 具体展开说说）\n- **resonate with**（引起共鸣）\n- **low-hanging fruit**（容易快速见效的切入点）\n- **scalable**（可扩展的 / 可规模化的）\n\n四、三条递进式情境主线（Scenario Missions）\n· **Stage 1 · Coffee Shop Icebreaker（吧台破冰与点单闲聊）**：在 Blue Bottle 与 Maya 完成地道点单与 Small Talk，并与邻座调试代码的 Marcus 搭话破冰。\n· **Stage 2 · Technical Brainstorm（极客共创与词汇实战）**：与 Marcus 探讨如何将大模型变成有温度的 AI 口语语伴，在对话中实战激活至少 3 个目标词汇。\n· **Stage 3 · The 3-Minute Pitch（硅谷投资人闪电路演）**：抓住 Elena 喝咖啡的黄金 10 分钟，用流畅英文向她演示你的产品愿景并赢得下周 Office Hours 的深度面谈邀约。",
+  "character": "【角色卡—Alex】\n姓名：Alex / 文化背景：双语AI创造者 / 角色定位：AI Engineer & Builder / 英语等级：CEFR B2 (进阶实战)\n性别：不限 / 年龄：22\n外貌与随身特征：背着装有实时口语互动文游引擎 Demo 的笔记本电脑，手里拿着刚记满地道表达笔记的随身手卡，眼神专注而充满好奇。\n属性：流利度：14 / 词汇量：14 / 语法准确：15 / 语用得体：14 / 逻辑说服：15\n流利度 (Fluency)：78 / 表达自信 (Confidence)：75 / 语用得体度 (Pragmatics)：76",
+  "rules": "【双核驱动法则：沉浸式情境叙事 + 按需口语教练】\n\n1. **沉浸式双语/全英分层叙事**：\n   · 剧中 NPC 的所有台词必须使用地道、自然的美式英语（匹配 CEFR B1-C1 真实硅谷语境）。\n   · 场景动作与环境氛围描写以英文为主（或关键处附简练中文情境提示），让玩家身临其境地感受旧金山咖啡馆与路演现场。\n   · 在正文中主动用 **Markdown 加粗** 标记 1~2 个值得习得的地道短语或习语（Collocations / Idioms）。\n   · 绝不替玩家做决定，不在正文末尾列出机械的 A/B/C 选项；每次把对话话筒自然交给玩家。\n\n2. **AI 建议按需触发（严禁在正文中直接给出建议）**：\n   · 正常对话回合中，只输出纯粹的剧中人物对话与情境反应，不要在正文中直接给出 AI 导师纠错建议或下一轮回复选项，把独立思考和开口表达的空间完整留给玩家（玩家需要建议时会自行点击界面上的「💡 获取 AI 导师建议」按钮）。\n   · 仅当玩家消息以 [AI Tutor] / [Ask AI Tutor] / [AI Summary] 开头主动求助时，才在回复中提供针对性的地道润色（Recast）与分级英文回应示范。\n\n3. **词汇迷宫动态激励**：\n   · 当玩家在英文回复中主动用出「待激活词汇（unknown）」中的词或短语时，在末尾数据块中将该词移入「已掌握词汇（known）」，同时为流利度/表达自信状态条 +3~+5。",
+  "memoryPins": "- 学习者当前等级为 CEFR B2，目标是提升在真实硅谷职场与跨文化社交中的英语口语流利度与地道感。\n- 当前身处旧金山 SoMa 区的 Blue Bottle Coffee，随身携带着「AI 实时口语互动文游引擎」原型 Demo。\n- 待实战激活的核心词汇：traction, bottleneck, game-changer, on the same page, flesh out, resonate with。\n- 口语导师重点关注：帮助学习者用自然连接词（Well, Actually, The way I see it）替代生硬停顿，并用具体动词短语替代笼统的 make/do。",
+  "lore": {
+    "world": "【沉浸式口语剧场：旧金山 SoMa 创业脉搏 (San Francisco Startup Pulse)】\n\n一、场景定位与跨文化背景（Story World Setting）\n这里是美国旧金山南市场区（SoMa, San Francisco）——全球 AI 创业者、投资人与产品极客密度最高的街区。清晨的阳光洒进 Mint Plaza 街角的 Blue Bottle Coffee，浓缩咖啡机的蒸汽声与周围用英语激烈讨论 LLM Agent、Product-Market Fit 的交谈声交织在一起。\n\n你作为一名刚抵达旧金山的 AI 开发者 / 产品创造者，正在带着自己打磨的「AI 实时生成英语口语互动引擎」原型参加本周的创始人咖啡社交（Founder Coffee Chat）与 Demo Day 预热路演。你的目标是跨越语言障碍，用自然、地道、有说服力的英语与当地的工程师、投资人和创作者建立真实连接。\n\n二、核心常驻语伴与人物（NPC Personas）\n1. **Elena Vance**（早期风投合伙人 / Seed Partner at Horizon Ventures）\n   · 性格与说话风格：语速干脆、直奔主题（direct & analytical），喜欢听具体的数据与用户痛点，讨厌空洞的行业黑话。\n   · 英语口语对练定位：商务路演（Elevator Pitch）、产品价值阐述、应对尖锐追问（Q&A Handling）。\n   · 常用地道表达：\"What's your unfair advantage?\" / \"Walk me through the user journey.\" / \"That's a crowded space—what makes it sticky?\"\n\n2. **Marcus Chen**（旧金山 AI 创业公司高级工程师 / Senior AI Engineer）\n   · 性格与说话风格：热情健谈、充满技术好奇心（warm & geeky），正在吧台旁调试一套多智能体工作流（Multi-Agent Workflow）。\n   · 英语口语对练定位：技术交流（Tech Talk）、Prompt Engineering 经验分享、职场同行破冰（Networking）。\n   · 常用地道表达：\"We hit a latency bottleneck yesterday.\" / \"How are you handling context window drift?\" / \"Let's bounce some ideas around.\"\n\n3. **Maya Lin**（精品咖啡师兼独立播客主理人 / Barista & Indie Podcaster）\n   · 性格与说话风格：松弛幽默、地道美式西海岸口语（casual & idiomatic），擅长用日常俚语和温暖寒暄让人放松下来。\n   · 英语口语对练定位：日常点单与闲聊（Small Talk）、生活故事分享、克服开口紧张感。\n   · 常用地道表达：\"You look like you could use an extra shot of espresso!\" / \"No worries, take your time.\" / \"What brings you to the Bay Area?\"\n\n三、目标词库（Target Vocabulary）\n鼓励学习者在本世界互动中自然激活以下高频地道表达（当玩家主动准确使用时，系统会自动将其移入「已掌握词汇」列表）：\n- **pain point**（核心痛点）\n- **traction**（产品增长势头 / 用户验证数据）\n- **bottleneck**（瓶颈 / 卡点）\n- **game-changer**（颠覆性创新 / 破局点）\n- **on the same page**（达成共识 / 理解一致）\n- **flesh out**（充实细节 / 具体展开说说）\n- **resonate with**（引起共鸣）\n- **low-hanging fruit**（容易快速见效的切入点）\n- **scalable**（可扩展的 / 可规模化的）\n\n四、三条递进式情境主线（Scenario Missions）\n· **Stage 1 · Coffee Shop Icebreaker（吧台破冰与点单闲聊）**：在 Blue Bottle 与 Maya 完成地道点单与 Small Talk，并与邻座调试代码的 Marcus 搭话破冰。\n· **Stage 2 · Technical Brainstorm（极客共创与词汇实战）**：与 Marcus 探讨如何将大模型变成有温度的 AI 口语语伴，在对话中实战激活至少 3 个目标词汇。\n· **Stage 3 · The 3-Minute Pitch（硅谷投资人闪电路演）**：抓住 Elena 喝咖啡的黄金 10 分钟，用流畅英文向她演示你的产品愿景并赢得下周 Office Hours 的深度面谈邀约。",
+    "character": "【角色卡—Alex】\n姓名：Alex / 文化背景：双语AI创造者 / 角色定位：AI Engineer & Builder / 英语等级：CEFR B2 (进阶实战)\n性别：不限 / 年龄：22\n外貌与随身特征：背着装有实时口语互动文游引擎 Demo 的笔记本电脑，手里拿着刚记满地道表达笔记的随身手卡，眼神专注而充满好奇。\n属性：流利度：14 / 词汇量：14 / 语法准确：15 / 语用得体：14 / 逻辑说服：15\n流利度 (Fluency)：78 / 表达自信 (Confidence)：75 / 语用得体度 (Pragmatics)：76",
+    "rules": "【双核驱动法则：沉浸式情境叙事 + 按需口语教练】\n\n1. **沉浸式双语/全英分层叙事**：\n   · 剧中 NPC 的所有台词必须使用地道、自然的美式英语（匹配 CEFR B1-C1 真实硅谷语境）。\n   · 场景动作与环境氛围描写以英文为主（或关键处附简练中文情境提示），让玩家身临其境地感受旧金山咖啡馆与路演现场。\n   · 在正文中主动用 **Markdown 加粗** 标记 1~2 个值得习得的地道短语或习语（Collocations / Idioms）。\n   · 绝不替玩家做决定，不在正文末尾列出机械的 A/B/C 选项；每次把对话话筒自然交给玩家。\n\n2. **AI 建议按需触发（严禁在正文中直接给出建议）**：\n   · 正常对话回合中，只输出纯粹的剧中人物对话与情境反应，不要在正文中直接给出 AI 导师纠错建议或下一轮回复选项，把独立思考和开口表达的空间完整留给玩家（玩家需要建议时会自行点击界面上的「💡 获取 AI 导师建议」按钮）。\n   · 仅当玩家消息以 [AI Tutor] / [Ask AI Tutor] / [AI Summary] 开头主动求助时，才在回复中提供针对性的地道润色（Recast）与分级英文回应示范。\n\n3. **词汇迷宫动态激励**：\n   · 当玩家在英文回复中主动用出「待激活词汇（unknown）」中的词或短语时，在末尾数据块中将该词移入「已掌握词汇（known）」，同时为流利度/表达自信状态条 +3~+5。",
+    "memoryPins": "- 学习者当前等级为 CEFR B2，目标是提升在真实硅谷职场与跨文化社交中的英语口语流利度与地道感。\n- 当前身处旧金山 SoMa 区的 Blue Bottle Coffee，随身携带着「AI 实时口语互动文游引擎」原型 Demo。\n- 待实战激活的核心词汇：traction, bottleneck, game-changer, on the same page, flesh out, resonate with。\n- 口语导师重点关注：帮助学习者用自然连接词（Well, Actually, The way I see it）替代生硬停顿，并用具体动词短语替代笼统的 make/do。"
+  },
+  "wizardConfig": {
+    "races": ["双语AI创造者", "国际交换学者", "硅谷初创极客", "跨国远程开发者", "独立产品设计师"],
+    "classes": ["AI Engineer", "Product Manager", "Startup Founder", "UX Researcher", "Full-Stack Builder"],
+    "identities": ["CEFR B1 (日常流利)", "CEFR B2 (职场实战)", "CEFR C1 (母语级表达)", "Pitch 路演挑战者"],
+    "attributes": ["流利度", "词汇量", "语法准确", "语用得体", "逻辑说服"],
+    "pointBudget": 25,
+    "maxPerStat": 8
+  },
+  "worldSchema": {
+    "version": 1,
+    "preset": "modern",
+    "name": "口语实战 · 硅谷创业篇",
+    "profileFields": [
+      { "key": "name", "label": "学习者", "slot": "title" },
+      { "key": "race", "label": "背景", "slot": "badge" },
+      { "key": "class", "label": "角色定位", "slot": "badge" },
+      { "key": "identity", "label": "CEFR 目标", "slot": "badge" },
+      { "key": "gender", "label": "偏好口音", "slot": "field", "emptyText": "美式通用 (General American)" },
+      { "key": "age", "label": "目标语速", "slot": "field", "emptyText": "1.0x 自然常速" },
+      { "key": "appearance", "label": "口语学习目标与随身状态", "slot": "appearance" }
+    ],
+    "creation": {
+      "rows": [
+        {
+          "cols": "grid-cols-2 sm:grid-cols-4",
+          "fields": [
+            { "key": "name", "label": "英文名 / 昵称", "cardLabel": "学习者", "type": "text", "span": 2, "required": true, "placeholder": "例如：Alex / Evelyn" },
+            { "key": "gender", "label": "偏好口音", "type": "select", "options": ["美式英语", "英式英语", "国际化通用"] },
+            { "key": "age", "label": "练习强度", "type": "number", "value": 20 }
+          ]
+        },
+        {
+          "cols": "grid-cols-1 sm:grid-cols-3",
+          "fields": [
+            { "key": "race", "label": "多元文化背景", "type": "chips", "source": "races" },
+            { "key": "class", "label": "专业角色定位", "type": "chips", "source": "classes" },
+            { "key": "identity", "label": "CEFR 等级与目标", "type": "chips", "source": "identities" }
+          ]
+        },
+        {
+          "cols": "grid-cols-1",
+          "fields": [
+            { "key": "appearance", "label": "个人学习诉求与破冰设定", "type": "textarea", "rows": 2, "placeholder": "例如：希望重点训练 AI 产品 Pitch 与地道闲聊，克服开口前的语法焦虑..." }
+          ]
+        }
+      ],
+      "dice": {
+        "key": "语感爆发",
+        "label": "临场语感状态随机检定 (D6)",
+        "sides": 6,
+        "base": 12,
+        "map": { "1": 0, "2": 1, "3": 2, "4": 3, "5": 4, "6": 5 }
+      },
+      "derived": [
+        { "label": "流利度 (Fluency)", "cardLabel": "Fluency", "tone": "emerald", "formula": "45 + 流利度 * 6" },
+        { "label": "表达自信 (Confidence)", "cardLabel": "Confidence", "tone": "cyan", "formula": "45 + 语用得体 * 6" },
+        { "label": "语用得体度 (Pragmatics)", "cardLabel": "Pragmatics", "tone": "amber", "formula": "45 + 逻辑说服 * 6" }
+      ]
+    },
+    "tabs": [
+      {
+        "id": "stats",
+        "label": "口语档案",
+        "panelClass": "space-y-4",
+        "sections": [
+          { "id": "profile", "type": "profile", "label": "学习者档案" },
+          { "id": "location", "type": "location", "label": "当前对话场景" },
+          {
+            "id": "vitals",
+            "type": "bars",
+            "label": "实时口语状态 (Speaking Vitals)",
+            "source": "bars",
+            "fields": [
+              { "key": "流利度 (Fluency)", "label": "流利度 (Fluency)", "max": 100, "tone": "emerald" },
+              { "key": "表达自信 (Confidence)", "label": "表达自信 (Confidence)", "max": 100, "tone": "cyan" },
+              { "key": "语用得体度 (Pragmatics)", "label": "语用得体度 (Pragmatics)", "max": 100, "tone": "amber" }
+            ]
+          },
+          { "id": "attrs", "type": "stats", "label": "五维口语能力雷达", "source": "attributes", "radar": true },
+          {
+            "id": "mastery",
+            "type": "tiers",
+            "label": "AI Topic 话题熟练度",
+            "source": "weapon_mastery",
+            "ladder": ["A2 破冰", "B1 日常", "B2 职场", "C1 流利", "C2 母语级", "演说家"],
+            "emptyText": "开始对话后将自动评估话题熟练度"
+          },
+          { "id": "states", "type": "tags", "label": "当前沟通状态与增益", "source": "status_effects", "emptyText": "语感平稳" }
+        ]
+      },
+      {
+        "id": "npc",
+        "label": "语伴人脉",
+        "panelClass": "space-y-3",
+        "sections": [
+          {
+            "id": "codex",
+            "type": "entities",
+            "label": "Tutor Matching · 语伴与NPC关系",
+            "source": "npc_codex",
+            "badgeKey": "love_type",
+            "infoFields": [
+              { "key": "race", "label": "身份定位" },
+              { "key": "personality", "label": "沟通风格" }
+            ],
+            "dimensions": [
+              { "key": "affection", "deltaKey": "affDelta", "label": "契合度 (Rapport)", "max": 100, "tone": "rose" },
+              { "key": "trust", "deltaKey": "trustDelta", "label": "信任度 (Trust)", "max": 100, "tone": "cyan" },
+              { "key": "depth", "deltaKey": "depthDelta", "label": "交流深度 (Depth)", "max": 100, "tone": "amber" }
+            ],
+            "emptyText": "当前尚未与语伴展开对话。"
+          }
+        ]
+      },
+      {
+        "id": "bag",
+        "label": "话题道具",
+        "panelClass": "space-y-2.5",
+        "sections": [
+          { "id": "items", "type": "list", "label": "随身话题卡与情境道具", "source": "inventory", "layout": "grid" }
+        ]
+      },
+      {
+        "id": "spells",
+        "label": "词汇迷宫",
+        "panelClass": "space-y-3",
+        "sections": [
+          {
+            "id": "spells",
+            "type": "list",
+            "label": "地道句型脚手架 (Sentence Patterns)",
+            "source": "spells",
+            "layout": "cards",
+            "costKey": "mp",
+            "costLabel": "难度",
+            "tagKey": "ring",
+            "tagFallback": "高频句型",
+            "action": {
+              "label": "套用开口",
+              "template": "[Use Pattern: {name}] 我想用这个地道句型开口回应："
+            },
+            "emptyText": "暂无句型卡"
+          },
+          { "id": "skills", "type": "skills", "label": "Word Maze · 词汇迷宫 (已掌握 vs 待激活)", "source": "skills", "emptyText": "暂无词汇记录" }
+        ]
+      }
+    ]
+  },
+  "hudState": {
+    "character_profile": {
+      "name": "Alex",
+      "gender": "美式通用 (General American)",
+      "age": "1.0x 自然常速",
+      "race": "双语AI创造者",
+      "class": "AI Engineer",
+      "identity": "CEFR B2 (职场实战)",
+      "appearance": "带着「AI 实时生成英语口语互动引擎」Demo 来到旧金山 SoMa，希望通过真实场景对话打磨地道表达与产品 Pitch 能力。"
+    },
+    "location": "Blue Bottle Coffee · Mint Plaza (SF)",
+    "time": "上午 09:30 · 阳光明媚的咖啡社交时刻",
+    "bars": [
+      { "label": "流利度 (Fluency)", "current": 78, "max": 100, "color": "emerald" },
+      { "label": "表达自信 (Confidence)", "current": 75, "max": 100, "color": "cyan" },
+      { "label": "语用得体度 (Pragmatics)", "current": 76, "max": 100, "color": "amber" }
+    ],
+    "attribute_cap": 20,
+    "attributes": {
+      "流利度": { "current": 14, "max": 20 },
+      "词汇量": { "current": 14, "max": 20 },
+      "语法准确": { "current": 15, "max": 20 },
+      "语用得体": { "current": 14, "max": 20 },
+      "逻辑说服": { "current": 15, "max": 20 }
+    },
+    "weapon_mastery": {
+      "Small Talk (破冰闲聊)": { "level": "B2 职场", "exp": 60 },
+      "Tech Discussion (技术探讨)": { "level": "B2 职场", "exp": 55 },
+      "Elevator Pitch (产品路演)": { "level": "B1 日常", "exp": 40 }
+    },
+    "npc_codex": [
+      {
+        "name": "Maya Lin",
+        "race": "Barista & Indie Podcaster",
+        "personality": "Warm, casual, West Coast idiomatic",
+        "love_type": "破冰语伴 (Icebreaker)",
+        "affection": 65,
+        "affDelta": 0,
+        "trust": 60,
+        "trustDelta": 0,
+        "depth": 35,
+        "depthDelta": 0
+      },
+      {
+        "name": "Marcus Chen",
+        "race": "Senior AI Engineer",
+        "personality": "Geeky, collaborative, curious about LLMs",
+        "love_type": "技术同行 (Tech Peer)",
+        "affection": 55,
+        "affDelta": 0,
+        "trust": 55,
+        "trustDelta": 0,
+        "depth": 40,
+        "depthDelta": 0
+      },
+      {
+        "name": "Elena Vance",
+        "race": "Seed Partner @ Horizon VC",
+        "personality": "Sharp, fast-paced, values clarity & traction",
+        "love_type": "路演导师 (Investor)",
+        "affection": 45,
+        "affDelta": 0,
+        "trust": 50,
+        "trustDelta": 0,
+        "depth": 30,
+        "depthDelta": 0
+      }
+    ],
+    "spells": [
+      {
+        "name": "I couldn't help noticing...",
+        "ring": "B2 破冰",
+        "mp": 1,
+        "desc": "自然切入他人话题：\"I couldn't help noticing your laptop screen—are you building an AI agent workflow?\""
+      },
+      {
+        "name": "The core pain point we're solving is...",
+        "ring": "B2 路演",
+        "mp": 2,
+        "desc": "一针见血阐述产品价值：\"The core pain point we're solving is that traditional language apps lack real situational context.\""
+      },
+      {
+        "name": "Just to make sure we're on the same page...",
+        "ring": "B2 确认",
+        "mp": 1,
+        "desc": "职场与技术讨论中的礼貌对齐：\"Just to make sure we're on the same page, are you suggesting we optimize latency first?\""
+      },
+      {
+        "name": "To flesh that out a bit...",
+        "ring": "C1 进阶",
+        "mp": 3,
+        "desc": "展开补充细节的高分连接词：\"To flesh that out a bit, our engine combines Story Worlds with real-time AI Tutor recasts.\""
+      }
+    ],
+    "skills": {
+      "known": [
+        "pain point (核心痛点)",
+        "seamless (无缝丝滑的)",
+        "iterate (快速迭代)"
+      ],
+      "unknown": [
+        "traction (增长验证)",
+        "bottleneck (性能/业务瓶颈)",
+        "game-changer (破局点)",
+        "on the same page (达成共识)",
+        "flesh out (充实展开细节)",
+        "resonate with (引起共鸣)",
+        "low-hanging fruit (易见效切入点)",
+        "scalable (可规模化的)"
+      ]
+    },
+    "status_effects": [
+      {
+        "name": "Morning Espresso Boost",
+        "type": "buff",
+        "desc": "身处旧金山 SoMa 创业氛围中，开口意愿与语感敏锐度提升"
+      }
+    ],
+    "inventory": [
+      {
+        "name": "Story Worlds 引擎原型平板",
+        "qty": 1,
+        "icon": "💻",
+        "desc": "装有你开发的 AI 实时口语互动文游引擎 Demo，随时可向 Marcus 或 Elena 现场演示。"
+      },
+      {
+        "name": "Blue Bottle 手冲咖啡券",
+        "qty": 2,
+        "icon": "☕",
+        "desc": "可在吧台点单，或请邻座的工程师/投资人喝一杯手冲咖啡自然破冰。"
+      },
+      {
+        "name": "硅谷核心表达手卡",
+        "qty": 1,
+        "icon": "📇",
+        "desc": "记录着硅谷 Coffee Chat 与 Pitch 常用句型脚手架的随身卡片。"
+      }
+    ]
+  },
+  "history": []
+}
+
