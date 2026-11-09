@@ -12,6 +12,19 @@
 
 ---
 
+## 📸 界面预览 (Screenshots)
+
+**主界面 · 故事世界与口语 HUD**
+![主界面](docs/screenshots/01-hero.png)
+
+**角色创建向导 · 世界预设与属性分配**
+![角色创建向导](docs/screenshots/02-character-wizard.png)
+
+**世界蓝图 · 面板与字段可视化编辑**
+![世界蓝图](docs/screenshots/03-world-schema.png)
+
+---
+
 ## ✨ 核心特性 (Key Highlights)
 
 ### 1. 🎭 沉浸式故事世界 × 零剧透口语交锋 (Immersive Story Worlds)
