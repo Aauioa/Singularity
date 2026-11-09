@@ -8,7 +8,8 @@
 **奇点 (Singularity)** 是一款基于 **Tauri 2 + 零运行时框架依赖前端** 构建的 **AI 实时生成内容（Real-time Generative）英语口语情境互动与叙事引擎**。
 
 它将传统「开放式互动叙事（Interactive Fiction / TRPG）」的强沉浸感与「第二语言习得（SLA — 可理解性输入、语用得体性训练、按需母语级润色 Recast）」深度融合：学习者不再面对枯燥的句型填空，而是直接走进**旧金山 SoMa 咖啡馆路演**、**常春藤大学 Seminar 研讨课**或任意自定义故事世界，与性格鲜明的 AI 语伴（NPC）实时用英语交锋、破冰、辩论与共创。
-安装包[![Download](https://img.shields.io/badge/Download-v0.1.0-blue)](https://github.com/Aauioa/trpg/releases/latest)
+
+安装包：[![Download](https://img.shields.io/badge/Download-v0.1.0-blue)](https://github.com/Aauioa/Singularity/releases/latest)
 
 ---
 
